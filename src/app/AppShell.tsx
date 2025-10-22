@@ -1,3 +1,4 @@
+// src/app/AppShell.tsx
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "@/components/layout/Navbar/Sidebar";
 import { BrandBadge } from "@/components/layout/Navbar/BrandBadge";
@@ -11,7 +12,7 @@ export default function AppShell() {
         <Sidebar />
       </div>
 
-      <main className="flex-1 min-w-0 overflow-auto grid place-items-center">
+      <main className="flex-1 min-w-0 overflow-auto">
         <Outlet />
       </main>
     </div>

@@ -1,0 +1,50 @@
+.chip {
+  /* размеры */
+  --h: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--h);
+  padding-inline: 12px;
+
+  /* визуал */
+  background: #E9EADA;              /* твой цвет */
+  color: var(--bg);                 /* текст цветом --bg */
+  border: 1px solid #BABABA;        /* твоя граница */
+  border-radius: 8px;               /* «чуть-чуть» скругление */
+
+  /* типографика */
+  font-family: var(--font-mono, "Anonymous Pro", ui-monospace, monospace);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.1;
+
+  /* тень (мягкая, как у «пилюль») */
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.10),
+    0 3px 8px rgba(0, 0, 0, 0.06);
+
+  /* интерактив */
+  cursor: pointer;
+  transition: transform .06s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.chip:hover {
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.14),
+    0 5px 14px rgba(0, 0, 0, 0.10);
+}
+
+.chip:active {
+  transform: translateY(1px);
+}
+
+/* модификаторы по желанию — оставила мягкими */
+.chip--muted {
+  opacity: .85;
+}
+
+.chip--active {
+  outline: 2px solid color-mix(in oklab, #BABABA 40%, transparent);
+  outline-offset: 1px;
+}
