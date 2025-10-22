@@ -9,13 +9,8 @@ export function Sidebar() {
   return (
     <aside className={cls.sidebar}>
       <div className={cls.navTop}>
-        <div className={cls.brand}>
-          <span className={cls.brandDot} />
-          <span className={cls.brandBar} />
-        </div>
         {top.map(it => <SidebarItem key={it.to} {...it} />)}
       </div>
-
       <div className={cls.navBottom}>
         {bottom.map(it => <SidebarItem key={it.to} {...it} />)}
       </div>

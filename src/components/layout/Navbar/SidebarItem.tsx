@@ -13,7 +13,7 @@ export function SidebarItem({ icon: Icon, label, to }: {
           <div className={cls.iconWrap}>
             <Icon className={cls.icon} />
           </div>
-          <div className={cls.pill}>{isActive ? label : null}</div>
+          <div className={cls.pill}>{label}</div>
         </div>
       )}
     </NavLink>
