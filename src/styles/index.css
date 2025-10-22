@@ -118,3 +118,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+:root{
+  --accent:#FF017E;       
+  --secondary:#B0A4E4;     
+  --bg:#000000;
+  --fg:#FFFFFF;
+}
+
+.dark{
+  --bg:#000000;
+  --fg:#FFFFFF;
+}
