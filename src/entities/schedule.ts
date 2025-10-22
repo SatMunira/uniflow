@@ -1,4 +1,4 @@
-export type WeekCycle = 'A' | 'B' | 'WEEKLY'; 
+export type WeekCycle = 'Z1' | 'Z2' | 'WEEKLY'; 
 
 export interface WeekRange {
   fromKw: number; 
