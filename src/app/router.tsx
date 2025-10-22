@@ -1,10 +1,19 @@
 import { createBrowserRouter } from "react-router-dom";
 import AppShell from "./AppShell";
+import TimetablePage from "@/pages/schedule/TimeTablePage";
+import BoardPage from "@/pages/board/BoardPage";
+import { Page, PageSection } from "@/components/layout/Page";
+import { PageHeader } from "@/components/layout/PageHeader";
 
-const Dummy: React.FC<{ txt: string }> = ({ txt }) => (
-  <div className="grid place-items-center h-dvh ">
-    <div className="text-3xl">{txt}</div>
-  </div>
+const Blank = ({ title }: { title: string }) => (
+  <Page>
+    <PageHeader title={title}/>
+    <PageSection>
+      <div className="rounded-xl border border-dashed p-10 text-center text-sm text-muted-foreground">
+        Пусто. Контент добавим позже.
+      </div>
+    </PageSection>
+  </Page>
 );
 
 export const router = createBrowserRouter([
@@ -12,15 +21,15 @@ export const router = createBrowserRouter([
     path: "/",
     element: <AppShell />,
     children: [
-      { index: true, element: <Dummy txt="Home" /> },
-      { path: "timetable", element: <Dummy txt="Timetable" /> },
-      { path: "board", element: <Dummy txt="Kanban" /> },
-      { path: "library", element: <Dummy txt="Library" /> },
-      { path: "tasks", element: <Dummy txt="Tasks" /> },
-      { path: "notes", element: <Dummy txt="Notes" /> },
-      { path: "pomodoro", element: <Dummy txt="Pomodoro" /> },
-      { path: "profile", element: <Dummy txt="Profile" /> },
-      { path: "logout", element: <Dummy txt="Logout" /> },
+      { index: true, element: <Blank title="Home" /> },
+      { path: "timetable", element: <TimetablePage /> },
+      { path: "board", element: <BoardPage /> },
+      { path: "library", element: <Blank title="Library" /> },
+      { path: "tasks", element: <Blank title="Tasks" /> },
+      { path: "notes", element: <Blank title="Notes" /> },
+      { path: "pomodoro", element: <Blank title="Pomodoro" /> },
+      { path: "profile", element: <Blank title="Profile" /> },
+      { path: "logout", element: <Blank title="Logout" /> },
     ],
   },
 ]);
