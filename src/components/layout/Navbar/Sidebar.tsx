@@ -1,4 +1,3 @@
-// Sidebar.tsx
 import cls from "./Sidebar.module.scss";
 import { NAV_ITEMS } from "./navItems";
 import { SidebarItem } from "./SidebarItem";
