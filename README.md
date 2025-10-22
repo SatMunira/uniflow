@@ -1,143 +1,143 @@
 # UniFlow
 
-Комплексное приложение для управления учебным процессом студентов: расписание, дедлайны, проекты (Kanban), библиотека материалов, Pomodoro, флэш‑карточки.
+A comprehensive application for managing students' educational process: schedule, deadlines, projects (Kanban), materials library, Pomodoro, flash‑cards.
 
 ---
 
-## Содержание
+## Contents
 
-- [Требования](#требования)
-- [Быстрый старт](#быстрый-старт)
-- [Скрипты npm](#скрипты-npm)
-- [Технологический стек](#технологический-стек)
-- [Структура проекта](#структура-проекта)
-- [Настройка окружения](#настройка-окружения)
+- [Requirements](#requirements)
+- [Quick start](#quick-start)
+- [npm scripts](#npm-scripts)
+- [Tech stack](#tech-stack)
+- [Project structure](#project-structure)
+- [Environment setup](#environment-setup)
 - [UI: Tailwind v4 + shadcn/ui](#ui-tailwind-v4--shadcnui)
-- [Фичи и модули](#фичи-и-модули)
-- [Код‑стайл и качество](#кодстайл-и-качество)
-- [Частые проблемы](#частые-проблемы)
+- [Features and modules](#features-and-modules)
+- [Code style & quality](#code-style--quality)
+- [Common issues](#common-issues)
 
 ---
 
-## Требования
+## Requirements
 
-- **Node.js ≥ 18.17** (рекомендуется LTS 20)
-- **npm ≥ 9** или **pnpm/yarn**
-- Браузер с поддержкой ES2022
+- **Node.js ≥ 18.17** (LTS 20 recommended)
+- **npm ≥ 9** or **pnpm / yarn**
+- Browser with ES2022 support
 
 ---
 
-## Быстрый старт
+## Quick start
 
 ```bash
-# 1) Установка зависимостей
+# 1) Install dependencies
 npm install
 
-# 2) Запуск дев‑сервера
+# 2) Run dev server
 npm run dev
 
-# 3) Продакшен‑сборка
+# 3) Production build
 npm run build
 
-# 4) Локальный предпросмотр сборки
+# 4) Local preview of the build
 npm run preview
 ```
 
-> По умолчанию Vite поднимает dev‑сервер на `http://localhost:5173`.
+> By default Vite serves the dev server at `http://localhost:5173`.
 
 ---
 
-## Скрипты npm
+## npm scripts
 
-- `dev` — запуск Vite dev‑сервера.
-- `build` — тип‑чек (tsc) + сборка Vite.
-- `preview` — локальный сервер для предпросмотра собранного бандла.
-- `lint` — запуск ESLint.
-- `prepare` — инициализация husky (хуки гита) — при необходимости.
+- `dev` — start Vite dev server.
+- `build` — type‑check (tsc) + Vite build.
+- `preview` — local server to preview the built bundle.
+- `lint` — run ESLint.
+- `prepare` — initialize husky (git hooks) — if needed.
 
 ---
 
-## Технологический стек
+## Tech stack
 
-**Основы**
+**Core**
 
 - React 19, Vite 7, TypeScript 5
 - React Router 7
 - Tailwind CSS **v4** + `@tailwindcss/vite`
-- shadcn/ui (через CLI, компоненты в `src/components/ui`)
+- shadcn/ui (via CLI, components in `src/components/ui`)
 
-**Данные и офлайн**
+**Data & offline**
 
-- @tanstack/react-query — запросы/кэш/ретраи
+- @tanstack/react-query — requests/cache/retries
 - Dexie — IndexedDB (local‑first)
-- Axios (если добавится; можно использовать fetch)
+- Axios (optional; fetch can be used)
 
-**Состояние и формы**
+**State & forms**
 
-- Zustand — лёгкий глобальный UI‑стейт
-- react-hook-form + zod — типобезопасные формы
+- Zustand — lightweight global UI state
+- react-hook-form + zod — type‑safe forms
 
-**Даты/расписание**
+**Dates & scheduling**
 
-- date-fns, date-fns‑tz — даты, таймзоны
-- rrule — повторяющиеся события (чёт/нечёт и паттерны)
+- date-fns, date-fns‑tz — dates, timezones
+- rrule — recurring events (odd/even weeks and patterns)
 
-**UI‑утилиты и экосистема**
+**UI utilities & ecosystem**
 
-- lucide-react — иконки
-- sonner — тосты
-- cmdk — командная палитра (Cmd/Ctrl + K)
-- react-resizable-panels — ресайз панелей
-- @dnd-kit/core, @dnd-kit/sortable *(можно добавить)* — drag&drop для Канбана
+- lucide-react — icons
+- sonner — toasts
+- cmdk — command palette (Cmd/Ctrl + K)
+- react-resizable-panels — resizable panels
+- @dnd-kit/core, @dnd-kit/sortable *(optional)* — drag & drop for Kanban
 
-**Контент**
+**Content**
 
 - react-markdown, remark-gfm, rehype-raw — Markdown
-- katex, rehype-katex — формулы
-- pdfjs-dist — просмотр PDF
+- katex, rehype-katex — formulas
+- pdfjs-dist — PDF viewing
 
-**Списки, таблицы, визуализация**
+**Lists, tables, visualization**
 
-- @tanstack/react-table — таблицы
-- @tanstack/virtual — виртуализация списков
-- recharts — графики (Pomodoro/прогресс)
+- @tanstack/react-table — tables
+- @tanstack/virtual — list virtualization
+- recharts — charts (Pomodoro/progress)
 
-**Реал‑тайм**
+**Real‑time**
 
-- sockjs-client, @stomp/stompjs — STOMP/WebSocket под Spring Boot
+- sockjs-client, @stomp/stompjs — STOMP/WebSocket for Spring Boot
 
-**Файлы**
+**Files**
 
-- xlsx — импорт/экспорт таблиц
-- jszip — архивирование
-- react-dropzone — drag&drop загрузка
-- file-type — определение формата файлов
+- xlsx — import/export spreadsheets
+- jszip — archiving
+- react-dropzone — drag & drop uploads
+- file-type — determine file formats
 
 **Dev**
 
 - ESLint, Prettier, Typescript ESLint, Husky, lint-staged
-- vite-plugin-pwa *(можно включить позже)*
+- vite-plugin-pwa *(optional later)*
 
-Полные версии библиотек смотрите в `package.json`.
+See `package.json` for exact dependency versions.
 
 ---
 
-## Структура проекта
+## Project structure
 
 ```
 uniflow/
 ├─ public/
 ├─ src/
-│  ├─ app/              # App, роуты, провайдеры
+│  ├─ app/              # App, routes, providers
 │  ├─ components/
 │  │  ├─ layout/        # Sidebar, Topbar
-│  │  └─ ui/            # shadcn/ui компоненты
-│  ├─ pages/            # экраны (Schedule, Projects, Tasks, ...)
-│  ├─ entities/         # доменные типы (TS)
+│  │  └─ ui/            # shadcn/ui components
+│  ├─ pages/            # screens (Schedule, Projects, Tasks, ...)
+│  ├─ entities/         # domain types (TS)
 │  ├─ data/             # db.ts (Dexie), repositories/
 │  ├─ store/            # Zustand
 │  ├─ styles/           # index.css (Tailwind v4)
-│  ├─ utils/            # хэлперы
+│  ├─ utils/            # helpers
 │  └─ main.tsx
 ├─ index.html
 ├─ package.json
@@ -148,9 +148,9 @@ uniflow/
 
 ---
 
-## Настройка окружения
+## Environment setup
 
-### Алиас импортов `@` → `src`
+### Import alias `@` → `src`
 
 `tsconfig.json`:
 
@@ -175,39 +175,39 @@ export default defineConfig({
 
 ### Tailwind v4
 
-`src/styles/index.css` — минимум:
+`src/styles/index.css` — minimum:
 
 ```css
 @import "tailwindcss";
-@import "tw-animate-css"; /* анимации для shadcn */
+@import "tw-animate-css"; /* animations for shadcn */
 ```
 
-### Тёмная тема (пример)
+### Dark theme (example)
 
-В `index.css` можно объявить переменные тем:
+In `index.css` you can declare theme variables:
 
 ```css
-:root { /* светлая палитра через CSS‑переменные */ }
-.dark { /* тёмная палитра */ }
+:root { /* light palette via CSS variables */ }
+.dark { /* dark palette */ }
 ```
 
-Переключатель темы — через добавление/удаление класса `dark` на `html`/`body` или через `data-theme`.
+Theme toggle can be done by adding/removing the `dark` class on `html`/`body` or via `data-theme`.
 
 ---
 
 ## UI: Tailwind v4 + shadcn/ui
 
-### Установка shadcn/ui
+### Install shadcn/ui
 
 ```bash
 npx shadcn@latest init
-# затем добавляйте компоненты по имени
+# then add components by name
 npx shadcn@latest add button card input dialog textarea select
 ```
 
-Компоненты появятся в `src/components/ui/*`.
+Components will appear in `src/components/ui/*`.
 
-### Использование
+### Usage
 
 ```tsx
 import { Button } from "@/components/ui/button";
@@ -217,7 +217,7 @@ export function Example(){
   return (
     <Card className="max-w-sm">
       <CardContent>
-        <Button>Пример</Button>
+        <Button>Example</Button>
       </CardContent>
     </Card>
   );
@@ -226,35 +226,34 @@ export function Example(){
 
 ---
 
-## Фичи и модули
+## Features and modules
 
-- **Расписание**: импорт из PDF (ручная разметка → авто‑парсинг позже), чёт/нечёт недели (`rrule`), напоминания.
-- **Проекты**: Kanban, Список, Календарь, Таблица; Markdown‑описания.
-- **Библиотека**: хранение файлов/ссылок, теги, поиск; предпросмотр PDF.
-- **Задания**: карточки с дедлайнами, статусы, вложения, тост‑напоминания.
-- **Pomodoro**: таймер, статистика времени, графики (recharts).
-- **Карточки (SRS)**: Markdown + KaTeX, интервальные повторения.
-- **Командная работа**: чат/уведомления через STOMP/WebSocket.
-
----
-
-## Код‑стайл и качество
-
-- ESLint + Typescript ESLint + Prettier (запуск: `npm run lint`).
-- Рекомендуется включить Husky + lint-staged для pre-commit хуков.
-- Тестирование: Vitest + Testing Library *(по мере роста проекта)*.
+- **Schedule**: PDF import (manual markup → auto‑parsing later), odd/even weeks (`rrule`), reminders.
+- **Projects**: Kanban, List, Calendar, Table; Markdown descriptions.
+- **Library**: file/link storage, tags, search; PDF preview.
+- **Tasks**: cards with deadlines, statuses, attachments, toast reminders.
+- **Pomodoro**: timer, time statistics, charts (recharts).
+- **Flashcards (SRS)**: Markdown + KaTeX, spaced repetition.
+- **Collaboration**: chat/notifications via STOMP/WebSocket.
 
 ---
 
-## Частые проблемы
+## Code style & quality
 
-- **VS Code предупреждает **`` — это директива Tailwind v4. Установите расширение *Tailwind CSS IntelliSense* и переключитесь на *Pre‑Release*; либо добавьте в `.vscode/settings.json`: `"css.lint.unknownAtRules": "ignore"`.
-- **Alias **``** не работает** — проверь `tsconfig.json` и `vite.config.ts` (см. выше) и перезапусти dev‑сервер.
-- **Ошибки с Tailwind CLI** — в v4 конфиг‑файлы не нужны, используйте `@tailwindcss/vite` и `@import "tailwindcss";` в стилях.
+- ESLint + Typescript ESLint + Prettier (run: `npm run lint`).
+- Husky + lint-staged recommended for pre-commit hooks.
+- Testing: Vitest + Testing Library *(as project grows)*.
 
 ---
 
-**Автор:** UniFlow FE Team
+## Common issues
 
-> Примечание: дизайн‑токены будут связаны с фирменной системой после утверждения макетов (shadcn/ui позволяет переопределить CSS‑переменные без переписывания компонентов).
+- **VS Code warns about @import** — this is a Tailwind v4 directive. Install *Tailwind CSS IntelliSense* and switch to *Pre‑Release*; or add to `.vscode/settings.json`: `"css.lint.unknownAtRules": "ignore"`.
+- **Alias `@` doesn't work** — check `tsconfig.json` and `vite.config.ts` (see above) and restart dev server.
+- **Tailwind CLI errors** — in v4 config files are not required; use `@tailwindcss/vite` and `@import "tailwindcss";` in your styles.
 
+---
+
+**Author:** UniFlow FE Team
+
+> Note: design tokens will be tied to the brand system after mockups are approved (shadcn/ui allows overriding CSS variables without rewriting components).
