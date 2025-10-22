@@ -1,19 +1,55 @@
 :root {
   --nav-radius: 9999px;
-  --nav-mt: 28px;
+  --nav-mt: 16px;
   --nav-mb: 16px;
   --nav-ml: 28px;
   --nav-px: 10px;
-  --nav-py: 32px;
+  --nav-py: 24px;
   --icon-d: 40px;       
   --icon-svg: 28px;    
   --bubble: 34px;      
   --bubble-hover: 36px; 
+  --brand-gap: 8px; 
+  --nav-w: 54px;      
+  --brand-d: 54px;   
+}
+
+.rail{
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  width: calc(var(--nav-ml) + var(--nav-w));
+}
+
+.brand {
+  inline-size: var(--brand-d);
+  block-size: var(--brand-d);
+  margin-left: calc(var(--nav-ml) + (var(--nav-w) - var(--brand-d)) / 2);
+  margin-top: 8px; 
+  margin-bottom: var(--brand-gap); 
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  background: var(--bg);            
+  color: var(--fg);                        
+}
+
+.brandIcon {
+  inline-size: 28px;
+  block-size: 28px;
 }
 
 .sidebar {
-  inline-size: 54px;
-  block-size: calc(100dvh - var(--nav-mt) - var(--nav-mb));
+  inline-size: var(--nav-w);
+  block-size: calc(
+    100dvh
+    - var(--nav-mt)
+    - var(--nav-mb)
+    - var(--brand-d)
+    - var(--brand-gap)
+  );
   margin: var(--nav-mt) 0 var(--nav-mb) var(--nav-ml);
   background: var(--bg);
   color: var(--fg);
