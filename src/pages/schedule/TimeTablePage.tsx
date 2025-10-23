@@ -7,6 +7,7 @@ import type { WeekCycle } from "@/entities/schedule";
 import { AccentButton } from "@/components/ui/AccentButton/AccentButton";
 import { Plus } from "lucide-react";
 import { WeekCalendar } from "@/components/ui/Calender/WeekCalendar";
+import { addDays } from "date-fns";
 
 export default function TimetablePage() {
   const [anchor, setAnchor] = useState(new Date("2025-10-21"));
@@ -43,10 +44,13 @@ export default function TimetablePage() {
 
       <div className="py-2">
         <WeekCalendar
+          startDate={anchor}
           hourStart={8}
           hourEnd={19}
           stepMinutes={30}
           locale="en-US"
+          onPrevWeek={() => setAnchor(a => addDays(a, -7))}
+          onNextWeek={() => setAnchor(a => addDays(a, +7))}
           onSlotClick={(slot) => {
             console.log("Click slot:", slot.start, "→", slot.end);
             // тут позже откроешь модалку «создать запись»

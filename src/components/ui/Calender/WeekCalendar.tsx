@@ -19,6 +19,9 @@ export type WeekCalendarProps = {
   onSlotClick?: (slot: SlotInfo) => void;
   renderCell?: (slot: SlotInfo) => React.ReactNode;
   className?: string;
+  onPrevWeek?: () => void;
+  onNextWeek?: () => void;
+  showNavArrows?: boolean;
 };
 
 function startOfDay(d: Date) {
@@ -46,6 +49,9 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
   onSlotClick,
   renderCell,
   className = "",
+  onPrevWeek,
+  onNextWeek,
+  showNavArrows = true,
 }) => {
   // базовая неделя от понедельника
   const weekStart = useMemo(() => {
@@ -124,7 +130,28 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
     >
       {/* Шапка */}
       <div className={cls.header}>
-        <div className={cls.headerGutter} />
+        <div className={cls.headerGutter}>
+          {showNavArrows && (
+            <div className={cls.navArrows} role="group" aria-label="Change week">
+              <button
+                type="button"
+                className={cls.navBtn}
+                aria-label="Previous week"
+                onClick={onPrevWeek}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                className={cls.navBtn}
+                aria-label="Next week"
+                onClick={onNextWeek}
+              >
+                →
+              </button>
+            </div>
+          )}
+        </div>
         {Array.from({ length: days }).map((_, i) => {
           const d = addDays(weekStart, i);
           const parts = dayPartsFmt.formatToParts(d);

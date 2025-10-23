@@ -44,8 +44,62 @@
 }
 
 .headerGutter {
+  position: relative;
   border-right: var(--grid-border);
+  background: #fafafa;
+  /* стрелки должны заполнить ячейку */
+  overflow: hidden; /* чтобы hover-фон не вылезал за скругления */
 }
+
+.navArrows {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* каждая половину */
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+/* центральный разделитель */
+.navArrows::after {
+  content: "";
+  position: absolute;
+  top: 1px;               /* немного отступов сверху/снизу */
+  bottom: 1px;
+  left: 50%;
+  width: 1px;
+  background: #000;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+
+/* сами кнопки кликабельные */
+.navBtn {
+  /* снимем все дефолтные стили кнопки */
+  all: unset;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  user-select: none;
+
+  /* визуал: крупнее и без рамок */
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-weight: 700;
+  font-size: 18px;          /* «чуть побольше» */
+  line-height: 1;
+
+  /* фоны на hover/active */
+  transition: background .15s ease, transform .06s ease;
+}
+.navBtn:hover { background: rgba(0,0,0,0.06); }
+
+/* доступность */
+.navBtn:focus-visible {
+  outline: 2px solid var(--now);
+  outline-offset: -2px;     /* чтобы не выходить за скругления gutter */
+}
+.navBtn:active { transform: translateY(1px); }
 
 .headerCell {
   display: grid;
