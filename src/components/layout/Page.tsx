@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 
 export function Page({ children }: { children: ReactNode }) {
   return (
-    <section className="w-full">
-      <div className="mx-auto max-w-[1200px] px-6">{children}</div>
+    <section className="w-full h-screen flex flex-col">
+      <div className="w-full px-16 flex flex-col flex-1">{children}</div>
     </section>
   );
 }
