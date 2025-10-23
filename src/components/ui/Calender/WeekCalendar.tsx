@@ -1,11 +1,21 @@
 import React, { useMemo, useRef, useState } from "react";
 import cls from "./WeekCalender.module.scss";
+import { CheckCircle, Circle } from 'lucide-react';
 
 export type SlotInfo = {
   start: Date;
   end: Date;
-  dayIndex: number; // 0..(days-1)
-  rowIndex: number; // 0..(rows-1)
+  dayIndex: number; 
+  rowIndex: number; 
+};
+
+export type CalendarEvent = {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  color?: string;
+  attended?: boolean;
 };
 
 export type WeekCalendarProps = {
@@ -15,13 +25,15 @@ export type WeekCalendarProps = {
   hourEnd?: number;
   stepMinutes?: number;
   locale?: string;
-  showNowIndicator?: boolean; // оставил проп, но теперь линия следует за курсором
+  showNowIndicator?: boolean; 
   onSlotClick?: (slot: SlotInfo) => void;
   renderCell?: (slot: SlotInfo) => React.ReactNode;
   className?: string;
   onPrevWeek?: () => void;
   onNextWeek?: () => void;
   showNavArrows?: boolean;
+  events?: CalendarEvent[];                 
+  onToggleAttend?: (id: string) => void;   
 };
 
 function startOfDay(d: Date) {
@@ -52,8 +64,10 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
   onPrevWeek,
   onNextWeek,
   showNavArrows = true,
+  events = [],
+  onToggleAttend,
 }) => {
-  // базовая неделя от понедельника
+
   const weekStart = useMemo(() => {
     const now = startDate ? new Date(startDate) : new Date();
     const day = now.getDay(); // 0..6 (вс..сб)
@@ -61,7 +75,6 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
     return addDays(startOfDay(now), -shiftToMonday);
   }, [startDate]);
 
-  // индекс сегодня в диапазоне (для дефолтного активного дня)
   const todayIndex = useMemo(() => {
     const today = startOfDay(new Date());
     for (let i = 0; i < days; i++) {
@@ -90,7 +103,6 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
     [locale]
   );
 
-  // hover-индикатор (едет за мышкой)
   const gridRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<{ visible: boolean; topPct: number; minutes: number }>({
     visible: false,
@@ -110,7 +122,6 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
     const total = (hourEnd - hourStart) * 60;
     let mins = hourStart * 60 + Math.round((y / rect.height) * total);
 
-    // прилипание к 5 минутам (если нужно — оставь; если нет — закомментируй)
     mins = Math.round(mins / 5) * 5;
 
     setHover({ visible: true, topPct: pct, minutes: mins });
@@ -122,6 +133,69 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
 
   const hoverStyle: React.CSSProperties = hover.visible ? { top: `${hover.topPct}%` } : { display: "none" };
   const hoverDate = useMemo(() => new Date(2000, 0, 1, 0, hover.minutes), [hover.minutes]);
+
+  const minutesFromDayStart = (d: Date) => d.getHours() * 60 + d.getMinutes();
+  const dayDiff = (a: Date, b: Date) =>
+    Math.floor((startOfDay(a).getTime() - startOfDay(b).getTime()) / 86_400_000);
+
+  const eventsByDay = useMemo(() => {
+    const res: Array<
+      Array<CalendarEvent & { _topPct: number; _heightPct: number }>
+    > = Array.from({ length: days }, () => []);
+
+    const dayStartMin = hourStart * 60;
+    const dayEndMin = hourEnd * 60;
+    const totalMin = dayEndMin - dayStartMin;
+
+    for (const ev of events) {
+      const dIndex = dayDiff(ev.start, weekStart);
+      if (dIndex < 0 || dIndex >= days) continue;
+
+      const evStartMin = Math.max(dayStartMin, minutesFromDayStart(ev.start));
+      const evEndMin = Math.min(dayEndMin, minutesFromDayStart(ev.end));
+      if (evEndMin <= evStartMin) continue; 
+
+      const topPct = ((evStartMin - dayStartMin) / totalMin) * 100;
+      const heightPct = ((evEndMin - evStartMin) / totalMin) * 100;
+
+      res[dIndex].push({ ...ev, _topPct: topPct, _heightPct: heightPct });
+    }
+
+    for (const dayList of res) {
+      dayList.sort((a, b) => +a.start - +b.start);
+      const columns: CalendarEvent[][] = [];
+      for (const e of dayList) {
+        let placed = false;
+        for (const col of columns) {
+          const last = col[col.length - 1] as any;
+          if (+last.end <= +e.start) {
+            col.push(e);
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) columns.push([e]);
+      }
+
+      const colsCount = columns.length || 1;
+      columns.forEach((col, i) => {
+        for (const e of col as any[]) {
+          e._colLeftPct = (i / colsCount) * 100 + 1;     
+          e._colWidthPct = (1 / colsCount) * 100 - 2;   
+        }
+      });
+    }
+    return res as Array<
+      Array<
+        CalendarEvent & {
+          _topPct: number;
+          _heightPct: number;
+          _colLeftPct: number;
+          _colWidthPct: number;
+        }
+      >
+    >;
+  }, [events, days, hourStart, hourEnd, weekStart]);
 
   return (
     <div
@@ -177,7 +251,6 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
         })}
       </div>
       <div className={cls.bodyScroll}>
-        {/* Левая колонка — часы */}
         <div className={cls.times}>
           {Array.from({ length: hourEnd - hourStart + 1 }).map((_, i) => {
             const h = hourStart + i;
@@ -189,13 +262,11 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
             );
           })}
 
-          {/* badge со временем под курсором */}
           <div className={cls.nowBadge} style={hoverStyle}>
             {hoverLabelFmt.format(hoverDate)}
           </div>
         </div>
 
-        {/* Основная сетка */}
         <div
           ref={gridRef}
           className={cls.grid}
@@ -208,6 +279,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
 
           {Array.from({ length: days }).map((_, dayIndex) => {
             const dayDate = addDays(weekStart, dayIndex);
+            const dayEvents = eventsByDay[dayIndex] ?? [];
             return (
               <div key={dayIndex} className={cls.dayColumn} aria-label={dayDate.toDateString()}>
                 {Array.from({ length: rows }).map((__, rowIndex) => {
@@ -227,14 +299,55 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                     </button>
                   );
                 })}
+                <div className={cls.eventsLayer} aria-hidden>
+                  {dayEvents.map((ev) => {
+                    const attended = !!ev.attended;
+                    return (
+                      <div
+                        key={ev.id}
+                        className={[cls.event, attended && cls['event--attended']].filter(Boolean).join(' ')}
+                        style={{
+                          top: `${ev._topPct}%`,
+                          height: `${ev._heightPct}%`,
+                          left: `${ev._colLeftPct}%`,
+                          width: `${ev._colWidthPct}%`,
+                        }}
+                        title={`${ev.title}`}
+                      >
+                        <div className={cls.eventHead}>
+                          {ev.start.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' })} —{' '}
+                          {ev.end.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' })}
+                        </div>
+
+                        <div className={cls.eventTitle}>{ev.title}</div>
+
+                        <div className={cls.eventFoot}>
+                          {attended ? (
+                            <span className={cls.attendedBadge}>
+                              <CheckCircle className="size-4" aria-hidden />
+                              attended
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              className={cls.attendBtn}
+                              onClick={onToggleAttend ? () => onToggleAttend(ev.id) : undefined}
+                            >
+                              <Circle className="size-4" aria-hidden />
+                              mark attended
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}
 
-          {/* тонкая линия hover через всю сетку */}
           {showNowIndicator && <div className={cls.hoverIndicator} style={hoverStyle} />}
 
-          {/* толстая линия — только в активной колонке */}
           {showNowIndicator && (
             <div className={cls.activeColOverlay} style={{ gridColumn: `${activeDay + 2} / ${activeDay + 3}` }}>
               <div className={cls.hoverIndicatorThick} style={hoverStyle} />

@@ -1,12 +1,14 @@
+$ev-head: #9B84FF;
+$ev-body: #B0A4E4;
+$ev-border: #000;
+$ev-attended: #A5FFA0;
+
 .calendar {
   --days: 7;
   --rows: 24;
   --gutter-w: 64px;
-  /* левая колонка с часами */
   --header-h: 44px;
-  /* высота шапки */
   --cell-h: 44px;
-  /* высота строки (шаг) */
   --grid-border: 1px solid #000;
   --grid-bg: #fff;
   --hour-line: #000;
@@ -15,7 +17,6 @@
   --hdr-font-size: 14px;
   --hdr-font-weight: 600;
   --calendar-h: 570px;
-  /* выстави под свой кейс / можно calc(100vh - ... ) */
   --bottom-gap: 56px;
   position: relative;
   background: var(--grid-bg);
@@ -33,7 +34,6 @@
   block-size: var(--calendar-h);
 }
 
-/* ====== ШАПКА ====== */
 .header {
   grid-area: header;
   display: grid;
@@ -47,24 +47,22 @@
   position: relative;
   border-right: var(--grid-border);
   background: #fafafa;
-  /* стрелки должны заполнить ячейку */
-  overflow: hidden; /* чтобы hover-фон не вылезал за скругления */
+  overflow: hidden; 
 }
 
 .navArrows {
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr; /* каждая половину */
+  grid-template-columns: 1fr 1fr; 
   align-items: stretch;
   justify-items: stretch;
 }
 
-/* центральный разделитель */
 .navArrows::after {
   content: "";
   position: absolute;
-  top: 1px;               /* немного отступов сверху/снизу */
+  top: 1px;              
   bottom: 1px;
   left: 50%;
   width: 1px;
@@ -73,31 +71,24 @@
   pointer-events: none;
 }
 
-
-/* сами кнопки кликабельные */
 .navBtn {
-  /* снимем все дефолтные стили кнопки */
   all: unset;
   display: grid;
   place-items: center;
   cursor: pointer;
   user-select: none;
-
-  /* визуал: крупнее и без рамок */
   font-family: var(--font-mono, ui-monospace, monospace);
   font-weight: 700;
-  font-size: 18px;          /* «чуть побольше» */
+  font-size: 18px;          
   line-height: 1;
 
-  /* фоны на hover/active */
   transition: background .15s ease, transform .06s ease;
 }
 .navBtn:hover { background: rgba(0,0,0,0.06); }
 
-/* доступность */
 .navBtn:focus-visible {
   outline: 2px solid var(--now);
-  outline-offset: -2px;     /* чтобы не выходить за скругления gutter */
+  outline-offset: -2px;    
 }
 .navBtn:active { transform: translateY(1px); }
 
@@ -110,9 +101,7 @@
   color: inherit;
 
   border-right: 0;
-  /* было */
   border-left: var(--grid-border);
-  /* стало */
 }
 
 .headerCell:hover,
@@ -147,13 +136,12 @@
   font-weight: 600;
 }
 
-/* ====== ЛЕВАЯ КОЛОНКА (ЧАСЫ) ====== */
 .times {
   position: absolute;
-  inset-block-start: 0;         /* было: var(--header-h) */
+  inset-block-start: 0;         
   inset-inline-start: 0;
   inline-size: var(--gutter-w);
-  block-size: calc(var(--rows) * var(--cell-h));  /* полная высота содержимого */
+  block-size: calc(var(--rows) * var(--cell-h)); 
   border-right: var(--grid-border);
   background: #fcfcfc;
   z-index: 2;
@@ -170,7 +158,6 @@
 .timeRow>span {
   position: absolute;
   top: -1px;
-  /* на линии часа */
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
@@ -181,7 +168,6 @@
   color: #000;
 }
 
-/* badge времени (едет за линией) */
 .nowBadge {
   position: absolute;
   transform: translateY(-50%);
@@ -191,67 +177,46 @@
   font-size: 11px;
   line-height: 1;
 
-  /* твои новые цвета */
   color: var(--now);
-  /* текст — var(--now) */
   background: #FFC4E1;
-  /* фон — #FFC4E1 */
   border: 1px solid var(--now);
-  /* рамка — var(--now) */
 
   z-index: 5;
   pointer-events: none;
-
-  /* прошлую внутреннюю тень убираем */
   box-shadow: none;
 }
 
-
-/* ====== ОСНОВНАЯ СЕТКА ====== */
-/* .grid уже в "bodyScroll", менять не нужно — она длинная и будет прокручиваться */
 .grid {
   grid-area: body;
   position: relative;
   display: grid;
   grid-template-columns: var(--gutter-w) repeat(var(--days), 1fr);
-  /* важно: = полной высоте контента, чтобы была прокрутка */
   block-size: calc(var(--rows) * var(--cell-h));
 }
 
-/* вместо :first-of-type */
 .grid>.bodyGutter+.dayColumn {
   border-left: 0;
 }
 
-/* для шапки — тоже по соседству, чтобы наверняка */
 .headerGutter+.headerCell {
   border-left: 0;
 }
 
-
-/* левая «водосточная» колонка */
 .bodyGutter {
   grid-column: 1 / 2;
   background: #fcfcfc;
   border-right: var(--grid-border);
-  /* линия между gutter и днями */
 }
 
-/* колонки дней: рисуем слева, НЕ справа */
 .dayColumn {
   position: relative;
   z-index: 2;
   display: grid;
   grid-auto-rows: var(--cell-h);
   border-right: 0;
-  /* было: var(--grid-border) */
   border-left: var(--grid-border);
-  /* стало: линия слева */
 }
 
-
-
-/* слоты — только разделители, без hover-оверлея */
 .cell {
   border: 0;
   position: relative;
@@ -260,7 +225,6 @@
   padding: 0;
 }
 
-/* получас — мелкий пунктир #000 */
 .cell::after {
   content: "";
   position: absolute;
@@ -273,44 +237,34 @@
   pointer-events: none;
 }
 
-/* конец часа — сплошная линия #000 */
 .dayColumn .cell:nth-child(2n)::after {
   background-image: none;
   background-color: #000;
   opacity: 1;
 }
 
-/* убираем старый hover у ячеек */
 .cell:hover::after {
   content: "";
 }
 
-/* ====== HOVER-ИНДИКАТОРЫ: БЕЗ border-top, ТОЛЬКО background ====== */
-
-/* тонкая линия через всю сетку, не задевает вертикальные бордеры */
 .hoverIndicator {
   position: absolute;
   left: calc(var(--gutter-w) + 1px);
-  /* +1px от левого вертикального бордера */
   right: 1px;
-  /* -1px от правого вертикального бордера */
   height: 1.5px;
   background: var(--now);
   transform: translateY(-50%);
-  /* центр по Y (у тебя top уже вычисляется в % ) */
   z-index: 3;
   pointer-events: none;
   opacity: .9;
 }
 
-/* контейнер активной колонки */
 .activeColOverlay {
   position: relative;
   pointer-events: none;
   z-index: 4;
 }
 
-/* толстая линия — внутри активной колонки, с зазором 1px слева/справа */
 .hoverIndicatorThick {
   position: absolute;
   left: 1px;
@@ -322,18 +276,104 @@
   pointer-events: none;
 }
 
-
-/* новая обёртка — занимает всю "body"-зону и скроллит контент внутри */
 .bodyScroll {
   grid-area: body;
   position: relative;
   overflow: auto;
   block-size: 100%;
-
-  /* нижний зазор чтобы последнее время не прилипало к краю */
   padding-bottom: var(--bottom-gap);
 
-  /* скрыть скроллбар */
-  scrollbar-width: none;                 /* Firefox */
+  scrollbar-width: none;                 
 }
-.bodyScroll::-webkit-scrollbar { display: none; }  /* WebKit */
+.bodyScroll::-webkit-scrollbar { display: none; }  
+
+.eventsLayer {
+  position: absolute;
+  inset: 0 0 0 0;
+  pointer-events: none; 
+}
+
+.event {
+  position: absolute;
+  inset-inline: auto;
+  border: 1px solid $ev-border;     
+  border-radius: 12px;
+  background: $ev-body;           
+  box-shadow:
+    0 1px 0 rgba(0,0,0,.15),
+    0 8px 18px rgba(0,0,0,.10);
+  overflow: hidden;
+  pointer-events: auto;
+
+  display: grid;
+  grid-template-rows: auto 1fr auto;  
+}
+
+.eventHead {
+  background: $ev-head;              
+  color: #fff;                       
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.1;
+  padding: 4px 8px;
+  border-bottom: 1px solid $ev-border;
+ grid-row: 1;
+}
+
+.eventTitle {
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  grid-row: 2;
+}
+
+.eventHead  { grid-row: 1; }
+.eventTitle { grid-row: 2; min-height: 0; overflow: hidden; } 
+.eventFoot {
+  grid-row: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;                 
+  white-space: nowrap;
+  width: 100%;
+  min-height: 28px;
+  padding-left: 24px;
+  border-top: 1px solid $ev-border;
+  background: $ev-body;    
+  font-size: 12px;
+  font-weight: 800;        
+}
+
+.event--attended .eventFoot {
+  background: $ev-attended;
+}
+
+.attendedBadge,
+.attendBtn {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;                
+  line-height: 1;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  color: #000;
+  background: transparent;  
+}
+
+.attendBtn {
+  all: unset;
+  display: flex;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.attendBtn > svg,
+.attendedBadge > svg {
+  flex: 0 0 auto;
+  display: inline-block;
+  margin-right: 8px;  
+  vertical-align: middle;
+}
