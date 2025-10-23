@@ -6,7 +6,7 @@ import cls from "@/components/layout/Navbar/Sidebar.module.scss";
 
 export default function AppShell() {
   return (
-    <div className="flex h-dvh bg-background text-foreground">
+    <div className="flex h-dvh text-foreground bg-[#FEFFEF]">
       <div className={cls.rail}>
         <BrandBadge />
         <Sidebar />
