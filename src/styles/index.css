@@ -132,7 +132,8 @@
 
 :root{
   --accent:#FF017E;       
-  --secondary:#B0A4E4;     
+  --secondary:#B0A4E4;
+  --babyBlue: #CBE1FB;     
   --bg:#000000;
   --fg:#FFFFFF;
 }
