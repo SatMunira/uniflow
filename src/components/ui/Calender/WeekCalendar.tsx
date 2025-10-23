@@ -149,70 +149,71 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
           );
         })}
       </div>
+      <div className={cls.bodyScroll}>
+        {/* Левая колонка — часы */}
+        <div className={cls.times}>
+          {Array.from({ length: hourEnd - hourStart + 1 }).map((_, i) => {
+            const h = hourStart + i;
+            const label = hourFmt.format(new Date(2000, 0, 1, h));
+            return (
+              <div key={h} className={cls.timeRow} aria-hidden>
+                <span>{label}</span>
+              </div>
+            );
+          })}
 
-      {/* Левая колонка — часы */}
-      <div className={cls.times}>
-        {Array.from({ length: hourEnd - hourStart + 1 }).map((_, i) => {
-          const h = hourStart + i;
-          const label = hourFmt.format(new Date(2000, 0, 1, h));
-          return (
-            <div key={h} className={cls.timeRow} aria-hidden>
-              <span>{label}</span>
-            </div>
-          );
-        })}
-
-        {/* badge со временем под курсором */}
-        <div className={cls.nowBadge} style={hoverStyle}>
-          {hoverLabelFmt.format(hoverDate)}
-        </div>
-      </div>
-
-      {/* Основная сетка */}
-      <div
-        ref={gridRef}
-        className={cls.grid}
-        role="grid"
-        aria-label="Week calendar grid"
-        onMouseMove={onGridMouseMove}
-        onMouseLeave={onGridMouseLeave}
-      >
-        <div className={cls.bodyGutter} aria-hidden />
-
-        {Array.from({ length: days }).map((_, dayIndex) => {
-          const dayDate = addDays(weekStart, dayIndex);
-          return (
-            <div key={dayIndex} className={cls.dayColumn} aria-label={dayDate.toDateString()}>
-              {Array.from({ length: rows }).map((__, rowIndex) => {
-                const slotStart = addMinutes(new Date(dayDate.setHours(hourStart, 0, 0, 0)), rowIndex * stepMinutes);
-                const slotEnd = addMinutes(slotStart, stepMinutes);
-                const slot: SlotInfo = { start: slotStart, end: slotEnd, dayIndex, rowIndex };
-
-                return (
-                  <button
-                    key={rowIndex}
-                    type="button"
-                    className={cls.cell}
-                    onClick={onSlotClick ? () => onSlotClick(slot) : undefined}
-                    aria-label={`${slotStart.toLocaleString(locale)} — ${slotEnd.toLocaleTimeString(locale)}`}
-                  >
-                    {renderCell ? renderCell(slot) : null}
-                  </button>
-                );
-              })}
-            </div>
-          );
-        })}
-
-        {/* тонкая линия hover через всю сетку */}
-        {showNowIndicator && <div className={cls.hoverIndicator} style={hoverStyle} />}
-
-        {/* толстая линия — только в активной колонке */}
-        {showNowIndicator && (
-          <div className={cls.activeColOverlay} style={{ gridColumn: `${activeDay + 2} / ${activeDay + 3}` }}>
-            <div className={cls.hoverIndicatorThick} style={hoverStyle} />
+          {/* badge со временем под курсором */}
+          <div className={cls.nowBadge} style={hoverStyle}>
+            {hoverLabelFmt.format(hoverDate)}
           </div>
-        )}
+        </div>
+
+        {/* Основная сетка */}
+        <div
+          ref={gridRef}
+          className={cls.grid}
+          role="grid"
+          aria-label="Week calendar grid"
+          onMouseMove={onGridMouseMove}
+          onMouseLeave={onGridMouseLeave}
+        >
+          <div className={cls.bodyGutter} aria-hidden />
+
+          {Array.from({ length: days }).map((_, dayIndex) => {
+            const dayDate = addDays(weekStart, dayIndex);
+            return (
+              <div key={dayIndex} className={cls.dayColumn} aria-label={dayDate.toDateString()}>
+                {Array.from({ length: rows }).map((__, rowIndex) => {
+                  const slotStart = addMinutes(new Date(dayDate.setHours(hourStart, 0, 0, 0)), rowIndex * stepMinutes);
+                  const slotEnd = addMinutes(slotStart, stepMinutes);
+                  const slot: SlotInfo = { start: slotStart, end: slotEnd, dayIndex, rowIndex };
+
+                  return (
+                    <button
+                      key={rowIndex}
+                      type="button"
+                      className={cls.cell}
+                      onClick={onSlotClick ? () => onSlotClick(slot) : undefined}
+                      aria-label={`${slotStart.toLocaleString(locale)} — ${slotEnd.toLocaleTimeString(locale)}`}
+                    >
+                      {renderCell ? renderCell(slot) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          })}
+
+          {/* тонкая линия hover через всю сетку */}
+          {showNowIndicator && <div className={cls.hoverIndicator} style={hoverStyle} />}
+
+          {/* толстая линия — только в активной колонке */}
+          {showNowIndicator && (
+            <div className={cls.activeColOverlay} style={{ gridColumn: `${activeDay + 2} / ${activeDay + 3}` }}>
+              <div className={cls.hoverIndicatorThick} style={hoverStyle} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

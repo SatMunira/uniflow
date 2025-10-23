@@ -1,9 +1,12 @@
 .calendar {
   --days: 7;
   --rows: 24;
-  --gutter-w: 64px;      /* левая колонка с часами */
-  --header-h: 44px;      /* высота шапки */
-  --cell-h: 36px;        /* высота строки (шаг) */
+  --gutter-w: 64px;
+  /* левая колонка с часами */
+  --header-h: 44px;
+  /* высота шапки */
+  --cell-h: 44px;
+  /* высота строки (шаг) */
   --grid-border: 1px solid #000;
   --grid-bg: #fff;
   --hour-line: #000;
@@ -11,7 +14,9 @@
   --now: #FF017E;
   --hdr-font-size: 14px;
   --hdr-font-weight: 600;
-
+  --calendar-h: 570px;
+  /* выстави под свой кейс / можно calc(100vh - ... ) */
+  --bottom-gap: 56px;
   position: relative;
   background: var(--grid-bg);
   border: 1px solid #000;
@@ -22,8 +27,10 @@
   display: grid;
   grid-template:
     "header" var(--header-h)
-    "body" calc(var(--rows) * var(--cell-h))
+    "body" 1fr
     / 1fr;
+
+  block-size: var(--calendar-h);
 }
 
 /* ====== ШАПКА ====== */
@@ -35,7 +42,11 @@
   border-bottom: var(--grid-border);
   background: #fafafa;
 }
-.headerGutter { border-right: var(--grid-border); }
+
+.headerGutter {
+  border-right: var(--grid-border);
+}
+
 .headerCell {
   display: grid;
   place-items: center;
@@ -44,17 +55,25 @@
   background: transparent;
   color: inherit;
 
-  border-right: 0;                 /* было */
-  border-left: var(--grid-border); /* стало */
+  border-right: 0;
+  /* было */
+  border-left: var(--grid-border);
+  /* стало */
 }
+
 .headerCell:hover,
 .isActive {
   background: #000;
   color: #fff;
 }
-.headerCell:active { filter: brightness(.9); }
 
-.headerCell:last-child { border-right: 0; }
+.headerCell:active {
+  filter: brightness(.9);
+}
+
+.headerCell:last-child {
+  border-right: 0;
+}
 
 .headerLabel {
   display: inline-flex;
@@ -64,27 +83,40 @@
   font-family: var(--font-mono, ui-sans-serif, system-ui, "Segoe UI", Roboto, Arial);
   font-size: 14px;
 }
-.weekday { text-transform: uppercase; letter-spacing: .04em; }
-.dayNum { font-weight: 600; }
+
+.weekday {
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.dayNum {
+  font-weight: 600;
+}
 
 /* ====== ЛЕВАЯ КОЛОНКА (ЧАСЫ) ====== */
 .times {
   position: absolute;
-  inset-block-start: var(--header-h);
+  inset-block-start: 0;         /* было: var(--header-h) */
   inset-inline-start: 0;
   inline-size: var(--gutter-w);
-  block-size: calc(var(--rows) * var(--cell-h));
+  block-size: calc(var(--rows) * var(--cell-h));  /* полная высота содержимого */
   border-right: var(--grid-border);
   background: #fcfcfc;
   z-index: 2;
 
   display: grid;
-  grid-auto-rows: calc(var(--cell-h) * 2); /* 1 ряд = 60 минут */
+  grid-auto-rows: calc(var(--cell-h) * 2);
 }
-.timeRow { position: relative; display: block; }
-.timeRow > span {
+
+.timeRow {
+  position: relative;
+  display: block;
+}
+
+.timeRow>span {
   position: absolute;
-  top: -1px;            /* на линии часа */
+  top: -1px;
+  /* на линии часа */
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
@@ -106,9 +138,12 @@
   line-height: 1;
 
   /* твои новые цвета */
-  color: var(--now);              /* текст — var(--now) */
-  background: #FFC4E1;           /* фон — #FFC4E1 */
-  border: 1px solid var(--now);  /* рамка — var(--now) */
+  color: var(--now);
+  /* текст — var(--now) */
+  background: #FFC4E1;
+  /* фон — #FFC4E1 */
+  border: 1px solid var(--now);
+  /* рамка — var(--now) */
 
   z-index: 5;
   pointer-events: none;
@@ -119,24 +154,33 @@
 
 
 /* ====== ОСНОВНАЯ СЕТКА ====== */
+/* .grid уже в "bodyScroll", менять не нужно — она длинная и будет прокручиваться */
 .grid {
   grid-area: body;
   position: relative;
   display: grid;
   grid-template-columns: var(--gutter-w) repeat(var(--days), 1fr);
+  /* важно: = полной высоте контента, чтобы была прокрутка */
+  block-size: calc(var(--rows) * var(--cell-h));
 }
+
 /* вместо :first-of-type */
-.grid > .bodyGutter + .dayColumn { border-left: 0; }
+.grid>.bodyGutter+.dayColumn {
+  border-left: 0;
+}
 
 /* для шапки — тоже по соседству, чтобы наверняка */
-.headerGutter + .headerCell { border-left: 0; }
+.headerGutter+.headerCell {
+  border-left: 0;
+}
 
 
 /* левая «водосточная» колонка */
 .bodyGutter {
   grid-column: 1 / 2;
   background: #fcfcfc;
-  border-right: var(--grid-border); /* линия между gutter и днями */
+  border-right: var(--grid-border);
+  /* линия между gutter и днями */
 }
 
 /* колонки дней: рисуем слева, НЕ справа */
@@ -145,11 +189,13 @@
   z-index: 2;
   display: grid;
   grid-auto-rows: var(--cell-h);
-  border-right: 0;                /* было: var(--grid-border) */
-  border-left: var(--grid-border);/* стало: линия слева */
+  border-right: 0;
+  /* было: var(--grid-border) */
+  border-left: var(--grid-border);
+  /* стало: линия слева */
 }
-/* нижняя «толстая» линия: отключить у последней ячейки */
-.dayColumn .cell:last-child::after { content: none; }
+
+
 
 /* слоты — только разделители, без hover-оверлея */
 .cell {
@@ -159,35 +205,45 @@
   cursor: pointer;
   padding: 0;
 }
+
 /* получас — мелкий пунктир #000 */
 .cell::after {
   content: "";
   position: absolute;
-  left: 0; right: 0; bottom: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 1px;
   background-image: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 6px);
   opacity: .7;
   pointer-events: none;
 }
+
 /* конец часа — сплошная линия #000 */
 .dayColumn .cell:nth-child(2n)::after {
   background-image: none;
   background-color: #000;
   opacity: 1;
 }
+
 /* убираем старый hover у ячеек */
-.cell:hover::after { content: ""; }
+.cell:hover::after {
+  content: "";
+}
 
 /* ====== HOVER-ИНДИКАТОРЫ: БЕЗ border-top, ТОЛЬКО background ====== */
 
 /* тонкая линия через всю сетку, не задевает вертикальные бордеры */
 .hoverIndicator {
   position: absolute;
-  left: calc(var(--gutter-w) + 1px); /* +1px от левого вертикального бордера */
-  right: 1px;                        /* -1px от правого вертикального бордера */
+  left: calc(var(--gutter-w) + 1px);
+  /* +1px от левого вертикального бордера */
+  right: 1px;
+  /* -1px от правого вертикального бордера */
   height: 1.5px;
   background: var(--now);
-  transform: translateY(-50%);       /* центр по Y (у тебя top уже вычисляется в % ) */
+  transform: translateY(-50%);
+  /* центр по Y (у тебя top уже вычисляется в % ) */
   z-index: 3;
   pointer-events: none;
   opacity: .9;
@@ -212,13 +268,18 @@
   pointer-events: none;
 }
 
-/* 1) Убрать правый бордер у последней именно КОЛОНКИ (не последнего ребёнка вообще) */
-.grid > .dayColumn:last-of-type {
-  border-right: 0;
-}
 
-/* 2) Убрать нижний разделитель у последней ячейки в колонке */
-.dayColumn > .cell:last-child::after {
-  content: none;
-}
+/* новая обёртка — занимает всю "body"-зону и скроллит контент внутри */
+.bodyScroll {
+  grid-area: body;
+  position: relative;
+  overflow: auto;
+  block-size: 100%;
 
+  /* нижний зазор чтобы последнее время не прилипало к краю */
+  padding-bottom: var(--bottom-gap);
+
+  /* скрыть скроллбар */
+  scrollbar-width: none;                 /* Firefox */
+}
+.bodyScroll::-webkit-scrollbar { display: none; }  /* WebKit */
