@@ -1,0 +1,224 @@
+.calendar {
+  --days: 7;
+  --rows: 24;
+  --gutter-w: 64px;      /* левая колонка с часами */
+  --header-h: 44px;      /* высота шапки */
+  --cell-h: 36px;        /* высота строки (шаг) */
+  --grid-border: 1px solid #000;
+  --grid-bg: #fff;
+  --hour-line: #000;
+  --half-line: rgba(0, 0, 0, 0.04);
+  --now: #FF017E;
+  --hdr-font-size: 14px;
+  --hdr-font-weight: 600;
+
+  position: relative;
+  background: var(--grid-bg);
+  border: 1px solid #000;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: var(--font-mono, "Anonymous Pro", ui-monospace, monospace);
+
+  display: grid;
+  grid-template:
+    "header" var(--header-h)
+    "body" calc(var(--rows) * var(--cell-h))
+    / 1fr;
+}
+
+/* ====== ШАПКА ====== */
+.header {
+  grid-area: header;
+  display: grid;
+  grid-template-columns: var(--gutter-w) repeat(var(--days), 1fr);
+  align-items: stretch;
+  border-bottom: var(--grid-border);
+  background: #fafafa;
+}
+.headerGutter { border-right: var(--grid-border); }
+.headerCell {
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, filter .15s ease;
+  background: transparent;
+  color: inherit;
+
+  border-right: 0;                 /* было */
+  border-left: var(--grid-border); /* стало */
+}
+.headerCell:hover,
+.isActive {
+  background: #000;
+  color: #fff;
+}
+.headerCell:active { filter: brightness(.9); }
+
+.headerCell:last-child { border-right: 0; }
+
+.headerLabel {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  font-weight: 600;
+  font-family: var(--font-mono, ui-sans-serif, system-ui, "Segoe UI", Roboto, Arial);
+  font-size: 14px;
+}
+.weekday { text-transform: uppercase; letter-spacing: .04em; }
+.dayNum { font-weight: 600; }
+
+/* ====== ЛЕВАЯ КОЛОНКА (ЧАСЫ) ====== */
+.times {
+  position: absolute;
+  inset-block-start: var(--header-h);
+  inset-inline-start: 0;
+  inline-size: var(--gutter-w);
+  block-size: calc(var(--rows) * var(--cell-h));
+  border-right: var(--grid-border);
+  background: #fcfcfc;
+  z-index: 2;
+
+  display: grid;
+  grid-auto-rows: calc(var(--cell-h) * 2); /* 1 ряд = 60 минут */
+}
+.timeRow { position: relative; display: block; }
+.timeRow > span {
+  position: absolute;
+  top: -1px;            /* на линии часа */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+
+  font-size: var(--hdr-font-size);
+  font-weight: var(--hdr-font-weight);
+  color: #000;
+}
+
+/* badge времени (едет за линией) */
+.nowBadge {
+  position: absolute;
+  transform: translateY(-50%);
+  padding: 2px 6px;
+  border-radius: 999px;
+
+  font-size: 11px;
+  line-height: 1;
+
+  /* твои новые цвета */
+  color: var(--now);              /* текст — var(--now) */
+  background: #FFC4E1;           /* фон — #FFC4E1 */
+  border: 1px solid var(--now);  /* рамка — var(--now) */
+
+  z-index: 5;
+  pointer-events: none;
+
+  /* прошлую внутреннюю тень убираем */
+  box-shadow: none;
+}
+
+
+/* ====== ОСНОВНАЯ СЕТКА ====== */
+.grid {
+  grid-area: body;
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--gutter-w) repeat(var(--days), 1fr);
+}
+/* вместо :first-of-type */
+.grid > .bodyGutter + .dayColumn { border-left: 0; }
+
+/* для шапки — тоже по соседству, чтобы наверняка */
+.headerGutter + .headerCell { border-left: 0; }
+
+
+/* левая «водосточная» колонка */
+.bodyGutter {
+  grid-column: 1 / 2;
+  background: #fcfcfc;
+  border-right: var(--grid-border); /* линия между gutter и днями */
+}
+
+/* колонки дней: рисуем слева, НЕ справа */
+.dayColumn {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-auto-rows: var(--cell-h);
+  border-right: 0;                /* было: var(--grid-border) */
+  border-left: var(--grid-border);/* стало: линия слева */
+}
+/* нижняя «толстая» линия: отключить у последней ячейки */
+.dayColumn .cell:last-child::after { content: none; }
+
+/* слоты — только разделители, без hover-оверлея */
+.cell {
+  border: 0;
+  position: relative;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+/* получас — мелкий пунктир #000 */
+.cell::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background-image: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 6px);
+  opacity: .7;
+  pointer-events: none;
+}
+/* конец часа — сплошная линия #000 */
+.dayColumn .cell:nth-child(2n)::after {
+  background-image: none;
+  background-color: #000;
+  opacity: 1;
+}
+/* убираем старый hover у ячеек */
+.cell:hover::after { content: ""; }
+
+/* ====== HOVER-ИНДИКАТОРЫ: БЕЗ border-top, ТОЛЬКО background ====== */
+
+/* тонкая линия через всю сетку, не задевает вертикальные бордеры */
+.hoverIndicator {
+  position: absolute;
+  left: calc(var(--gutter-w) + 1px); /* +1px от левого вертикального бордера */
+  right: 1px;                        /* -1px от правого вертикального бордера */
+  height: 1.5px;
+  background: var(--now);
+  transform: translateY(-50%);       /* центр по Y (у тебя top уже вычисляется в % ) */
+  z-index: 3;
+  pointer-events: none;
+  opacity: .9;
+}
+
+/* контейнер активной колонки */
+.activeColOverlay {
+  position: relative;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* толстая линия — внутри активной колонки, с зазором 1px слева/справа */
+.hoverIndicatorThick {
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  height: 3px;
+  background: var(--now);
+  transform: translateY(-50%);
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* 1) Убрать правый бордер у последней именно КОЛОНКИ (не последнего ребёнка вообще) */
+.grid > .dayColumn:last-of-type {
+  border-right: 0;
+}
+
+/* 2) Убрать нижний разделитель у последней ячейки в колонке */
+.dayColumn > .cell:last-child::after {
+  content: none;
+}
+

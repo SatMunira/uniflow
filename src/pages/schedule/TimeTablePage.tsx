@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Page } from "@/components/layout/Page"; 
+import { Page } from "@/components/layout/Page";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Toolbar } from "@/components/layout/Toolbar";
 import { WeekNav } from "@/pages/schedule/WeekNav";
 import type { WeekCycle } from "@/entities/schedule";
 import { AccentButton } from "@/components/ui/AccentButton/AccentButton";
 import { Plus } from "lucide-react";
+import { WeekCalendar } from "@/components/ui/Calender/WeekCalendar";
 
 export default function TimetablePage() {
   const [anchor, setAnchor] = useState(new Date("2025-10-21"));
@@ -39,6 +40,19 @@ export default function TimetablePage() {
           </AccentButton>
         }
       />
+
+      <div className="py-2">
+        <WeekCalendar
+          hourStart={8}
+          hourEnd={19}
+          stepMinutes={30}
+          locale="en-US"
+          onSlotClick={(slot) => {
+            console.log("Click slot:", slot.start, "→", slot.end);
+            // тут позже откроешь модалку «создать запись»
+          }}
+        />
+      </div>
 
     </Page>
   );
