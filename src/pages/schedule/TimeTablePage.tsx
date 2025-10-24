@@ -12,6 +12,12 @@ import { generateOccurrencesForWeekView } from "@/data/schedule/generateWeek";
 import { subjectsMock } from "@/mocks/subjects";
 import type { CalendarEvent } from "@/components/ui/Calender/WeekCalendar";
 import { toggleAttended } from "@/data/schedule/generateWeek";
+import Modal from "@/components/ui/Modal/Modal";
+import { InputField } from "@/components/ui/InputField/InputField";
+import { X, Check } from "lucide-react";
+import SubtleButton from "@/components/ui/SubtleButton/SubtleButton";
+import { TimeField } from "@/components/ui/TimeField/TimeField";
+import SelectField from "@/components/ui/SelectField/SelectField";
 
 export default function TimetablePage() {
   const [anchor, setAnchor] = useState(new Date("2025-10-21"));
@@ -20,6 +26,16 @@ export default function TimetablePage() {
   const [occs, setOccs] = useState(() =>
     generateOccurrencesForWeekView(subjectsMock, anchor, viewCycle)
   );
+
+  const [isNewOpen, setIsNewOpen] = useState(false);
+
+  const [form, setForm] = useState({
+    title: "",
+    date: "2025-10-21",
+    start: "10:00",
+    end: "11:00",
+    zyklus: "Z1",           
+  });
 
   const events: CalendarEvent[] = useMemo(() => {
     const fresh = generateOccurrencesForWeekView(subjectsMock, anchor, viewCycle);
@@ -45,6 +61,10 @@ export default function TimetablePage() {
     });
   };
 
+  const handleCreate = () => {
+    setIsNewOpen(false);
+  };
+
   return (
     <Page>
       <PageHeader title="Timetable" titleClassName="font-mono h-tight" />
@@ -63,7 +83,7 @@ export default function TimetablePage() {
           />
         }
         right={
-          <AccentButton variant="outline" className="gap-2" onClick={() => console.log("Create new subject")}>
+          <AccentButton variant="outline" className="gap-2" onClick={() => setIsNewOpen(true)}>
             <Plus className="size-4" />
             New
           </AccentButton>
@@ -83,6 +103,113 @@ export default function TimetablePage() {
           onToggleAttend={handleToggleAttend}
         />
       </div>
+      <Modal
+        isOpen={isNewOpen}
+        onClose={() => setIsNewOpen(false)}
+        title="Add a new subject to the timetable"
+        width="960px"
+        height="460px"
+        footerHeight="60px"
+        headerBg="#B0A4E4"
+        headerColor="#000"
+        contentBg="#FEFFEF"
+        footerBg="#FEFFEF"
+        footer={
+          <div className="contents"> 
+            <div>
+              <SubtleButton
+                variant="outline"
+                onClick={() => setIsNewOpen(false)}
+                className="
+          inline-flex items-center justify-center gap-5
+          rounded-full px-32 py-2 text-lg font-mono cancel-button
+        "
+              >
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full border border-black/50">
+                  <X className="w-8 h-6" />
+                </span>
+                Cancel
+              </SubtleButton>
+            </div>
+
+            <div>
+              <AccentButton
+                onClick={handleCreate}
+                className="
+          inline-flex items-center justify-center gap-5
+          rounded-full px-10 py-3 text-lg font-mono
+        "
+              >
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full border border-white/70">
+                  <Check className="w-8 h-6" />
+                </span>
+                Save
+              </AccentButton>
+            </div>
+          </div>
+        }
+      >
+        <div className="px-8 md:px-12 lg:px-16">
+          <form
+            className="grid gap-6 p-8 md:p-8 font-mono"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleCreate();
+            }}
+          >
+            <InputField
+              id="subject"
+              label="Subject name"
+              fieldSize="md"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: (e.target as HTMLInputElement).value })}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <TimeField
+                id="start"
+                label="Starting time"
+                value={form.start}
+                stepMinutes={5}               
+                onChange={(v) => setForm({ ...form, start: v })}
+              />
+              <TimeField
+                id="end"
+                label="Ending time"
+                value={form.end}
+                stepMinutes={5}
+                onChange={(v) => setForm({ ...form, end: v })}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <InputField
+                id="ab-kw"
+                label="Ab KW"
+                fieldSize="md"
+                inputMode="numeric"
+                pattern="[0-9]*"
+              />
+              <InputField
+                id="bis-kw"
+                label="Bis KW"
+                fieldSize="md"
+                inputMode="numeric"
+                pattern="[0-9]*"
+              />
+            </div>
+
+            <SelectField
+              id="zyklus"
+              label="Zyklus"
+              value={form.zyklus}
+              options={["Z1", "Z2", "Z3"]}
+              onChange={(v) => setForm({ ...form, zyklus: v })}
+            />
+          </form>
+        </div>
+      </Modal>
+
     </Page>
   );
 }
