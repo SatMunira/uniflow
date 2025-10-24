@@ -1,7 +1,8 @@
 import {
   CalendarDays, Grid2X2, BookOpen, CheckSquare, ListTodo,
-  Timer, User, LogOut
+  Timer, User, LogOut,
 } from "lucide-react";
+
 
 export type NavItem = {
   to: string;
