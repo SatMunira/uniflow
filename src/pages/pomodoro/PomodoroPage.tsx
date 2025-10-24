@@ -2,7 +2,6 @@ import { Page } from "@/components/layout/Page";
 import { PageHeader } from "@/components/layout/PageHeader";
 import TimerDisplay from "./components/TimerDisplay";
 import ControlButtons from "./components/ControlButtons";
-import SessionCounter from "./components/SessionCounter";
 import SettingsPanel from "./components/SettingsPanel";
 import ModeTabs from "./components/ModeTabs";
 import { usePomodoroTimer } from "./hooks/usePomodoroTimer";
@@ -19,6 +18,7 @@ export default function PomodoroPage() {
     switchMode,
     updateSettings,
   } = usePomodoroTimer();
+
 
   const getTotalTime = () => {
     switch (timerState.mode) {
@@ -66,14 +66,7 @@ export default function PomodoroPage() {
             />
           </div>
 
-          {/* Stats Section */}
-          <div className="w-full lg:w-80">
-            <SessionCounter
-              completedSessions={timerState.completedSessions}
-              currentCycle={timerState.currentCycle}
-              sessionsUntilLongBreak={settings.sessionsUntilLongBreak}
-            />
-          </div>
+          
         </div>
       </Page>
 
