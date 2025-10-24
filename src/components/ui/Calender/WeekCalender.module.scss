@@ -16,7 +16,7 @@ $ev-attended: #A5FFA0;
   --now: #FF017E;
   --hdr-font-size: 14px;
   --hdr-font-weight: 600;
-  --calendar-h: 570px;
+  --calendar-h: clamp(420px, 84dvh, 1220px);
   --bottom-gap: 56px;
   position: relative;
   background: var(--grid-bg);
