@@ -17,6 +17,7 @@ import { PublicRoute } from "@/components/auth/PublicRoute";
 import FlashListPage from "@/pages/flash/FlashListPage";
 import FlashSetPage from "@/pages/flash/FlashSetPage";
 import FlashReviewPage from "@/pages/flash/FlashReviewPage";
+import DashboardPage from "@/pages/dashboard/Dashboard";
 
 const Blank = ({ title }: { title: string }) => (
   <Page>
@@ -38,7 +39,7 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <Blank title="Home" /> },
+      { index: true, element: <DashboardPage /> },
       { path: "timetable", element: <TimetablePage /> },
       { path: "board", element: <ProjectsPage /> },
       { path: "library", element: <MaterialLibPage /> },
