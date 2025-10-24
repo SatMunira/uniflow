@@ -1,0 +1,287 @@
+/* Animated Grid Background */
+.grid-background {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 20s linear infinite;
+  z-index: 1;
+}
+
+@keyframes grid-move {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+/* Animated Gradient Orbs */
+.orbs-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  filter: blur(80px);
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #FF017E, transparent);
+  top: -10%;
+  left: -10%;
+  animation: orb-float-1 25s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #9B84FF, transparent);
+  bottom: -10%;
+  right: -10%;
+  animation: orb-float-2 20s ease-in-out infinite;
+}
+
+.orb-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #A5FFA0, transparent);
+  top: 30%;
+  left: 40%;
+  animation: orb-float-3 30s ease-in-out infinite;
+}
+
+@keyframes orb-float-1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(100px, 150px) scale(1.2);
+  }
+}
+
+@keyframes orb-float-2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-120px, -100px) scale(1.3);
+  }
+}
+
+@keyframes orb-float-3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-80px, 80px) scale(0.9);
+  }
+  66% {
+    transform: translate(80px, -80px) scale(1.1);
+  }
+}
+
+/* Particle System */
+.particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #000;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+/* Individual particle animations */
+.particle-1 {
+  top: 10%;
+  left: 20%;
+  animation: particle-rise 8s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+.particle-2 {
+  top: 80%;
+  left: 15%;
+  animation: particle-rise 10s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.particle-3 {
+  top: 30%;
+  left: 80%;
+  animation: particle-rise 9s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.particle-4 {
+  top: 60%;
+  left: 70%;
+  animation: particle-rise 11s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.particle-5 {
+  top: 40%;
+  left: 25%;
+  animation: particle-rise 7s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+.particle-6 {
+  top: 70%;
+  left: 90%;
+  animation: particle-rise 8.5s ease-in-out infinite;
+  animation-delay: 2.5s;
+}
+
+.particle-7 {
+  top: 20%;
+  left: 50%;
+  animation: particle-rise 9.5s ease-in-out infinite;
+  animation-delay: 0.8s;
+}
+
+.particle-8 {
+  top: 90%;
+  left: 40%;
+  animation: particle-rise 10.5s ease-in-out infinite;
+  animation-delay: 1.8s;
+}
+
+.particle-9 {
+  top: 15%;
+  left: 85%;
+  animation: particle-rise 7.5s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+.particle-10 {
+  top: 50%;
+  left: 10%;
+  animation: particle-rise 12s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+.particle-11 {
+  top: 35%;
+  left: 60%;
+  animation: particle-rise 8.8s ease-in-out infinite;
+  animation-delay: 2.2s;
+}
+
+.particle-12 {
+  top: 75%;
+  left: 55%;
+  animation: particle-rise 9.2s ease-in-out infinite;
+  animation-delay: 1.2s;
+}
+
+.particle-13 {
+  top: 25%;
+  left: 35%;
+  animation: particle-rise 10.8s ease-in-out infinite;
+  animation-delay: 2.8s;
+}
+
+.particle-14 {
+  top: 85%;
+  left: 75%;
+  animation: particle-rise 7.8s ease-in-out infinite;
+  animation-delay: 0.7s;
+}
+
+.particle-15 {
+  top: 45%;
+  left: 95%;
+  animation: particle-rise 11.5s ease-in-out infinite;
+  animation-delay: 1.7s;
+}
+
+.particle-16 {
+  top: 55%;
+  left: 5%;
+  animation: particle-rise 8.3s ease-in-out infinite;
+  animation-delay: 2.3s;
+}
+
+.particle-17 {
+  top: 65%;
+  left: 45%;
+  animation: particle-rise 9.8s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+
+.particle-18 {
+  top: 5%;
+  left: 65%;
+  animation: particle-rise 10.3s ease-in-out infinite;
+  animation-delay: 1.3s;
+}
+
+.particle-19 {
+  top: 95%;
+  left: 25%;
+  animation: particle-rise 7.3s ease-in-out infinite;
+  animation-delay: 2.7s;
+}
+
+.particle-20 {
+  top: 12%;
+  left: 75%;
+  animation: particle-rise 11.8s ease-in-out infinite;
+  animation-delay: 0.9s;
+}
+
+@keyframes particle-rise {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+    transform: translateY(-20px) scale(1);
+  }
+  90% {
+    opacity: 0.8;
+    transform: translateY(-150px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-180px) scale(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .orb-1, .orb-2, .orb-3 {
+    width: 300px;
+    height: 300px;
+  }
+
+  .grid-background {
+    background-size: 30px 30px;
+  }
+
+  .particle {
+    width: 3px;
+    height: 3px;
+  }
+}

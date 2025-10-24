@@ -32,7 +32,7 @@ export function usePomodoroTimer() {
     return [];
   });
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   // Save settings to localStorage
   useEffect(() => {
@@ -43,26 +43,6 @@ export function usePomodoroTimer() {
   useEffect(() => {
     localStorage.setItem("pomodoroSessions", JSON.stringify(sessions));
   }, [sessions]);
-
-  // Timer logic
-  useEffect(() => {
-    if (timerState.isRunning && timerState.timeLeft > 0) {
-      intervalRef.current = setInterval(() => {
-        setTimerState((prev) => ({
-          ...prev,
-          timeLeft: prev.timeLeft - 1,
-        }));
-      }, 1000);
-    } else if (timerState.timeLeft === 0 && timerState.isRunning) {
-      handleTimerComplete();
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [timerState.isRunning, timerState.timeLeft]);
 
   const handleTimerComplete = useCallback(() => {
     // Play sound if enabled
@@ -120,6 +100,26 @@ export function usePomodoroTimer() {
       currentCycle: nextCycle,
     });
   }, [timerState, settings]);
+
+  // Timer logic
+  useEffect(() => {
+    if (timerState.isRunning && timerState.timeLeft > 0) {
+      intervalRef.current = window.setInterval(() => {
+        setTimerState((prev) => ({
+          ...prev,
+          timeLeft: prev.timeLeft - 1,
+        }));
+      }, 1000);
+    } else if (timerState.timeLeft === 0 && timerState.isRunning) {
+      handleTimerComplete();
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [timerState.isRunning, timerState.timeLeft, handleTimerComplete]);
 
   const startTimer = useCallback(() => {
     setTimerState((prev) => ({ ...prev, isRunning: true }));
