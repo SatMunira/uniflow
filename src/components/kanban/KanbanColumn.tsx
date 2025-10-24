@@ -3,21 +3,22 @@ import type { KanbanCard as KanbanCardType, KanbanColumn as Column } from "@/ent
 import { KanbanCard } from "./KanbanCard";
 
 const THEME: Record<
-    Column["id"],
-    { wrapBg: string; headerBg: string; dot: string; addBorder: string }
+  Column["id"],
+  { wrapBg: string; headerBg: string; dot: string; addBorder: string }
 > = {
-    todo: { wrapBg: "bg-pink-100/80", headerBg: "bg-pink-200/60", dot: "bg-pink-400", addBorder: "border-pink-400/60" },
-    inprogress: { wrapBg: "bg-amber-100/80", headerBg: "bg-amber-200/60", dot: "bg-amber-500", addBorder: "border-amber-400/60" },
-    review: { wrapBg: "bg-cyan-100/80", headerBg: "bg-cyan-200/60", dot: "bg-cyan-500", addBorder: "border-cyan-500/50" },
-    done: { wrapBg: "bg-violet-100/80", headerBg: "bg-violet-200/60", dot: "bg-violet-500", addBorder: "border-violet-500/50" },
+  todo: { wrapBg: "bg-pink-100/80", headerBg: "bg-pink-200/60", dot: "bg-pink-400", addBorder: "border-pink-400/60" },
+  inprogress: { wrapBg: "bg-amber-100/80", headerBg: "bg-amber-200/60", dot: "bg-amber-500", addBorder: "border-amber-400/60" },
+  review: { wrapBg: "bg-cyan-100/80", headerBg: "bg-cyan-200/60", dot: "bg-cyan-500", addBorder: "border-cyan-500/50" },
+  done: { wrapBg: "bg-violet-100/80", headerBg: "bg-violet-200/60", dot: "bg-violet-500", addBorder: "border-violet-500/50" },
 };
 
 type Props = {
-    column: Column;
-    cards: Record<string, KanbanCardType>;
-     onAddCard: (columnId: Column["id"], title: string) => void;
+  column: Column;
+  cards: Record<string, KanbanCardType>;
+  onAddCard: (columnId: Column["id"], title: string) => void;
   onDropCard: (cardId: string, toColumnId: Column["id"]) => void;
   onAddClickModal?: (columnId: Column["id"]) => void; // если когда-нибудь захочешь вместо inline формы открывать модалку
+  onCardClick?: (card: KanbanCardType) => void;
 };
 
 export function KanbanColumn({
@@ -25,6 +26,7 @@ export function KanbanColumn({
   cards,
   onAddCard,
   onDropCard,
+  onCardClick,
 }: Props) {
   const t = THEME[column.id];
   const [isAdding, setIsAdding] = React.useState(false);
@@ -51,7 +53,17 @@ export function KanbanColumn({
           if (cardId) onDropCard(cardId, column.id);
         }}
       >
-        {column.cardIds.map((id) => (cards[id] ? <KanbanCard key={id} card={cards[id]} /> : null))}
+        {column.cardIds.map((id) => {
+          const card = cards[id];
+          return (
+            <KanbanCard
+              key={id}
+              card={card}
+              // если у тебя есть getMemberIndex — не забудь его тоже пробросить
+              onOpen={() => onCardClick?.(card)} // ⬅️ новый колбэк
+            />
+          );
+        })}
 
         {/* 1) Свернутая кнопка "+ Add Card" (пунктир потоньше и более квадратные углы) */}
         {!isAdding && (

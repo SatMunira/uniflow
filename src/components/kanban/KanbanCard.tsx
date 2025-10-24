@@ -24,21 +24,39 @@ type Props = {
   card: KanbanCard;
   /** Если передать, покажем «тот же» аватар участника, что и в Projects */
   getMemberIndex?: (id?: string) => { member?: ProjectMember; index?: number };
+  onOpen?: () => void;
 };
 
-export function KanbanCard({ card, getMemberIndex }: Props) {
+export function KanbanCard({ card, getMemberIndex, onOpen }: Props) { 
   // палитра как в Projects (по индексу)
   const COLORS = ["bg-violet-300", "bg-pink-300", "bg-sky-300", "bg-indigo-300", "bg-green-300"];
   const { member, index } = getMemberIndex?.(card.assigneeId) ?? {};
   const avatarColor = COLORS[(index ?? 0) % COLORS.length];
+   const draggingRef = React.useRef(false);
 
   return (
     <div
       draggable
       onDragStart={(e) => {
+        draggingRef.current = true; // ✅ важно
         e.dataTransfer.setData("text/card", card.id);
         e.dataTransfer.effectAllowed = "move";
       }}
+      onDragEnd={() => {
+        // даём браузеру закончить drag, потом сбрасываем флаг
+        setTimeout(() => (draggingRef.current = false), 0);
+      }}
+      onClick={() => {
+        if (!draggingRef.current) onOpen?.();
+      }}
+      onKeyDown={(e) => {
+        if ((e.key === "Enter" || e.key === " ") && !draggingRef.current) {
+          e.preventDefault();
+          onOpen?.();
+        }
+      }}
+      role="button"              // ✅ опционально
+      tabIndex={0} 
       className="rounded-2xl border border-black/25 bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.08)]"
     >
       {/* Теги */}
