@@ -140,3 +140,20 @@
 .dark .vSep {
   background: color-mix(in oklab, Canvas 92%, transparent); 
 }
+
+/* чтобы нативные иконки не ломали выравнивание */
+.input[type="date"],
+.input[type="time"] {
+  /* одинаковая высота/пэддинги уже есть, просто подчистим платформенные артефакты */
+  &::-webkit-datetime-edit,
+  &::-webkit-datetime-edit-fields-wrapper,
+  &::-webkit-datetime-edit-text,
+  &::-webkit-datetime-edit-hour-field,
+  &::-webkit-datetime-edit-minute-field,
+  &::-webkit-inner-spin-button,
+  &::-webkit-clear-button {
+    color: inherit;
+  }
+  &::-webkit-calendar-picker-indicator { opacity: .8; }
+}
+

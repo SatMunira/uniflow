@@ -1,0 +1,110 @@
+$txt: #818181;
+$focus: #B0A4E4;
+$border: #C9C9C9;
+
+.field {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  cursor: text;
+  overflow: visible;
+
+  /* задаём явный фон поля через переменную (её можно переопределять снаружи) */
+  --if-bg: #fff;           /* Поставь сюда свой фон панели/карточки */
+  background: var(--if-bg);
+
+  /* размеры/переменные */
+  --if-font: 16px;
+  --if-pad-x: 12px;
+  --if-pad-y: 10px;
+  --if-label-rest: 14px;
+  --if-label-float: 12px;
+  --border-w: 2px;
+  --radius: 8px;
+  --border-color: #{$border};
+
+  border: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: var(--border-w) solid var(--border-color);
+    border-radius: var(--radius);
+    pointer-events: none;
+    z-index: 0;
+    background: transparent;
+  }
+
+  transition: border-color 140ms ease;
+  &:hover, &:focus-within { --border-color: #{$focus}; }
+}
+
+.input {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  font: inherit;
+  font-size: var(--if-font);
+  line-height: 1.2;
+  color: #000;
+  background: transparent;
+  padding: var(--if-pad-y) var(--if-pad-x);
+  border: none;
+  outline: none;
+  &::placeholder { color: transparent; }
+}
+
+textarea.input { min-height: 110px; resize: vertical; }
+
+.label {
+  position: absolute;
+  left: var(--if-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 6px;
+  color: $txt;
+  font-size: var(--if-label-rest);
+  line-height: 1;
+  letter-spacing: 0;
+  pointer-events: none;
+
+  z-index: 2;
+
+  .label {
+  /* ...без изменений... */
+  &::after {
+    /* было: height: calc(var(--border-w) + 2px); */
+    height: calc(var(--border-w) + 4px);      /* чуть толще, чтобы не пробивала линия */
+    /* было: background: inherit; */
+    background: var(--if-bg);                  /* берём фон самого поля, а не прозрачный */
+    /* было: z-index: 1; */
+    z-index: 3;                               /* под текстом лейбла, но выше рамки */
+  }
+}
+
+  transition:
+    transform 160ms ease,
+    top 160ms ease,
+    font-size 160ms ease,
+    color 160ms ease,
+    letter-spacing 160ms ease;
+}
+
+.input:focus + .label,
+.input:not(:placeholder-shown) + .label,
+.filled .label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: var(--if-label-float);
+  color: $focus;
+  letter-spacing: .08em;
+  font-weight: 600;
+
+  /* Новое: настоящий «пробой» рамки */
+  background: var(--if-bg);
+  box-shadow: 0 0 0 calc(var(--border-w) + 2px) var(--if-bg);
+
+  &::after { opacity: 1; } /* можешь оставить как есть */
+}

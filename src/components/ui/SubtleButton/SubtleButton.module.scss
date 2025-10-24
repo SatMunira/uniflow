@@ -1,0 +1,38 @@
+.btn {
+  --h: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--h);
+  padding-inline: 12px;
+
+  background: #E9EADA;   /* фон */
+  color: #000;           /* текст + иконки (currentColor) */
+  border: 0.5px solid #000;/* чёрный бордюр */
+  border-radius: 8px;
+
+  font-family: var(--font-mono, "Anonymous Pro", ui-monospace, monospace);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.1;
+
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.10),
+    0 3px 8px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: transform .06s ease, box-shadow .15s ease, border-color .15s ease, background-color .15s ease, filter .15s ease;
+}
+
+.btn:hover {
+  filter: brightness(0.98) saturate(1.05);
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.14),
+    0 5px 14px rgba(0, 0, 0, 0.10);
+}
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible {
+  outline: 2px solid rgba(0,0,0,.25);
+  outline-offset: 2px;
+}
+.btn:disabled,
+.btn[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
