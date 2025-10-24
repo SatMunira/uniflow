@@ -10,6 +10,8 @@ import TasksPage from "@/pages/tasks/TasksPage";
 import TaskItemPage from "@/pages/tasks/TaskItemPage";
 import PomodoroPage from "@/pages/pomodoro/PomodoroPage";
 
+// import BoardPage from "@/pages/projects/ProjectPage";
+
 const Blank = ({ title }: { title: string }) => (
   <Page>
     <PageHeader title={title}/>
@@ -37,6 +39,7 @@ export const router = createBrowserRouter([
       { path: "pomodoro", element: <PomodoroPage /> },
       { path: "profile", element: <Blank title="Profile" /> },
       { path: "logout", element: <Blank title="Logout" /> },
+      // { path: "projects",element: <ProjectsPage />},
     ],
   },
 ]);
