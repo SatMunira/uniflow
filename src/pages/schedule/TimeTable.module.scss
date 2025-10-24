@@ -111,7 +111,6 @@
     outline-offset: 1px;
 }
 
-/* TimeTable.module.scss — к твоим уже существующим */
 .cycleList { display: grid; gap: .25rem; }
 .cycleItem {
   text-align: left;
@@ -140,3 +139,22 @@
 .dark .vSep {
   background: color-mix(in oklab, Canvas 92%, transparent); 
 }
+
+.input[type="date"],
+.input[type="time"] {
+  &::-webkit-datetime-edit,
+  &::-webkit-datetime-edit-fields-wrapper,
+  &::-webkit-datetime-edit-text,
+  &::-webkit-datetime-edit-hour-field,
+  &::-webkit-datetime-edit-minute-field,
+  &::-webkit-inner-spin-button,
+  &::-webkit-clear-button {
+    color: inherit;
+  }
+  &::-webkit-calendar-picker-indicator { opacity: .8; }
+}
+
+.textarea .placeholder {
+  font-family: var(--font-mono, "Anonymous Pro", ui-monospace, monospace);
+}
+

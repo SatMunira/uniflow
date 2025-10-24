@@ -11,11 +11,8 @@ function TagPill({ label }: { label: string }) {
   const base =
     "inline-flex items-center rounded-full px-3 py-[6px] text-[13px] font-semibold tracking-tight";
   const byName: Record<string, string> = {
-    // яркий розовый
     design: "bg-[#ff00a7] text-white",
-    // фиолетовый
     research: "bg-[#6f42ff] text-white",
-    // синий
     dev: "bg-[#1e63ff] text-white",
   };
 

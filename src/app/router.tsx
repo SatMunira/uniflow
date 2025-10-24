@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import AppShell from "./AppShell";
 import TimetablePage from "@/pages/schedule/TimeTablePage";
-import BoardPage from "@/pages/board/BoardPage";
+import ProjectsPage from "@/pages/board/ProjectsPage";
 import { Page, PageSection } from "@/components/layout/Page";
 import { PageHeader } from "@/components/layout/PageHeader";
 import MaterialLibPage from "@/pages/material-lib/MaterialLibPage";
@@ -14,6 +14,9 @@ import LoginPage from "@/pages/login-page/LoginPage";
 import RegisterPage from "@/pages/register-page/RegisterPage";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { PublicRoute } from "@/components/auth/PublicRoute";
+import FlashListPage from "@/pages/flash/FlashListPage";
+import FlashSetPage from "@/pages/flash/FlashSetPage";
+import FlashReviewPage from "@/pages/flash/FlashReviewPage";
 
 const Blank = ({ title }: { title: string }) => (
   <Page>
@@ -47,6 +50,9 @@ export const router = createBrowserRouter([
       { path: "profile", element: <Blank title="Profile" /> },
       { path: "logout", element: <Blank title="Logout" /> },
       { path: "projects/:id", element: <KanbanPage /> },
+      { path: "/flash/:id", element: <FlashSetPage /> },
+      {path: "flash/:id/review", element: <FlashReviewPage />},
+
     ],
   },
   {
