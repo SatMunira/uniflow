@@ -5,8 +5,8 @@ import { CheckCircle, Circle } from 'lucide-react';
 export type SlotInfo = {
   start: Date;
   end: Date;
-  dayIndex: number; 
-  rowIndex: number; 
+  dayIndex: number;
+  rowIndex: number;
 };
 
 export type CalendarEvent = {
@@ -25,15 +25,16 @@ export type WeekCalendarProps = {
   hourEnd?: number;
   stepMinutes?: number;
   locale?: string;
-  showNowIndicator?: boolean; 
+  showNowIndicator?: boolean;
   onSlotClick?: (slot: SlotInfo) => void;
   renderCell?: (slot: SlotInfo) => React.ReactNode;
   className?: string;
   onPrevWeek?: () => void;
   onNextWeek?: () => void;
   showNavArrows?: boolean;
-  events?: CalendarEvent[];                 
-  onToggleAttend?: (id: string) => void;   
+  events?: CalendarEvent[];
+  onToggleAttend?: (id: string) => void;
+  onEventClick?: (ev: CalendarEvent) => void;
 };
 
 function startOfDay(d: Date) {
@@ -66,6 +67,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
   showNavArrows = true,
   events = [],
   onToggleAttend,
+  onEventClick,
 }) => {
 
   const weekStart = useMemo(() => {
@@ -153,7 +155,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
 
       const evStartMin = Math.max(dayStartMin, minutesFromDayStart(ev.start));
       const evEndMin = Math.min(dayEndMin, minutesFromDayStart(ev.end));
-      if (evEndMin <= evStartMin) continue; 
+      if (evEndMin <= evStartMin) continue;
 
       const topPct = ((evStartMin - dayStartMin) / totalMin) * 100;
       const heightPct = ((evEndMin - evStartMin) / totalMin) * 100;
@@ -180,8 +182,8 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
       const colsCount = columns.length || 1;
       columns.forEach((col, i) => {
         for (const e of col as any[]) {
-          e._colLeftPct = (i / colsCount) * 100 + 1;     
-          e._colWidthPct = (1 / colsCount) * 100 - 2;   
+          e._colLeftPct = (i / colsCount) * 100 + 1;
+          e._colWidthPct = (1 / colsCount) * 100 - 2;
         }
       });
     }
@@ -313,6 +315,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                           width: `${ev._colWidthPct}%`,
                         }}
                         title={`${ev.title}`}
+                        onClick={() => onEventClick?.(ev)}
                       >
                         <div className={cls.eventHead}>
                           {ev.start.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' })} —{' '}
@@ -331,7 +334,10 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                             <button
                               type="button"
                               className={cls.attendBtn}
-                              onClick={onToggleAttend ? () => onToggleAttend(ev.id) : undefined}
+                              onClick={(e) => {
+                                e.stopPropagation();                // <- NEW: не открывать модалку
+                                onToggleAttend ? onToggleAttend(ev.id) : undefined;
+                              }}
                             >
                               <Circle className="size-4" aria-hidden />
                               mark attended
@@ -353,6 +359,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
               <div className={cls.hoverIndicatorThick} style={hoverStyle} />
             </div>
           )}
+
         </div>
       </div>
     </div>
