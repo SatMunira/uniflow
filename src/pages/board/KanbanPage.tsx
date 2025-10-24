@@ -53,7 +53,7 @@ export default function KanbanPage() {
         title="Kanban Board"
         subtitle={<span className="font-mono">{project.title}</span>}
       />
-      <div className="flex items-start gap-6 overflow-x-auto pb-6">
+      <div className="flex gap-6 overflow-x-auto pb-6">
         {board.columns.map(col => (
           <KanbanColumn
             key={col.id}

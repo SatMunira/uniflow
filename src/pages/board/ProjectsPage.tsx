@@ -6,6 +6,7 @@ import { ProjectCard } from "@/components/projects/ProjectCard";
 import { CreateProjectDialog } from "@/components/projects/CreateProjectDialog";
 import projectsMock from "@/mocks/projects";
 import { useNavigate } from "react-router-dom";
+import FloatingButton from "@/components/ui/FloatingButton/FloatingButton";
 
 export default function ProjectsPage() {
   const navigate = useNavigate();
@@ -25,6 +26,26 @@ export default function ProjectsPage() {
         </div>
       </PageSection>
       <CreateProjectDialog onCreate={() => {}} />
+      <FloatingButton
+              items={[
+                {
+                  label: "title",
+                  input: (
+                    <div className="flex flex-col">
+                      <label className="font-mono text-xs mb-1">Title</label>
+                      <input
+                        type="text"
+                        className="bg-white px-2 py-2 border border-black rounded-md mb-3"
+                      />
+                      <button className="bg-accent px-2 py-2 text-white font-mono rounded-md">
+                        Create
+                      </button>
+                    </div>
+                  ),
+                },
+              ]}
+              title={"Create board"}
+            />
     </Page>
   );
 }
