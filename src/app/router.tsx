@@ -9,8 +9,7 @@ import FolderItemsPage from "@/pages/material-lib/FolderItemsPage";
 import TasksPage from "@/pages/tasks/TasksPage";
 import TaskItemPage from "@/pages/tasks/TaskItemPage";
 import PomodoroPage from "@/pages/pomodoro/PomodoroPage";
-
-// import BoardPage from "@/pages/projects/ProjectPage";
+import KanbanPage from "@/pages/board/KanbanPage";
 
 const Blank = ({ title }: { title: string }) => (
   <Page>
@@ -39,7 +38,7 @@ export const router = createBrowserRouter([
       { path: "pomodoro", element: <PomodoroPage /> },
       { path: "profile", element: <Blank title="Profile" /> },
       { path: "logout", element: <Blank title="Logout" /> },
-      // { path: "projects",element: <ProjectsPage />},
+      { path: "projects/:id", element: <KanbanPage /> },
     ],
   },
 ]);
