@@ -111,7 +111,6 @@
     outline-offset: 1px;
 }
 
-/* TimeTable.module.scss — к твоим уже существующим */
 .cycleList { display: grid; gap: .25rem; }
 .cycleItem {
   text-align: left;
@@ -141,10 +140,8 @@
   background: color-mix(in oklab, Canvas 92%, transparent); 
 }
 
-/* чтобы нативные иконки не ломали выравнивание */
 .input[type="date"],
 .input[type="time"] {
-  /* одинаковая высота/пэддинги уже есть, просто подчистим платформенные артефакты */
   &::-webkit-datetime-edit,
   &::-webkit-datetime-edit-fields-wrapper,
   &::-webkit-datetime-edit-text,
@@ -155,5 +152,9 @@
     color: inherit;
   }
   &::-webkit-calendar-picker-indicator { opacity: .8; }
+}
+
+.textarea .placeholder {
+  font-family: var(--font-mono, "Anonymous Pro", ui-monospace, monospace);
 }
 

@@ -5,7 +5,7 @@ import { Toolbar } from "@/components/layout/Toolbar";
 import { WeekNav } from "@/pages/schedule/WeekNav";
 import type { WeekCycle } from "@/entities/schedule";
 import { AccentButton } from "@/components/ui/AccentButton/AccentButton";
-import { Plus } from "lucide-react";
+import { Plus, TextAlignStart } from "lucide-react";
 import { WeekCalendar } from "@/components/ui/Calender/WeekCalendar";
 import { addDays } from "date-fns";
 import { generateOccurrencesForWeekView } from "@/data/schedule/generateWeek";
@@ -14,10 +14,11 @@ import type { CalendarEvent } from "@/components/ui/Calender/WeekCalendar";
 import { toggleAttended } from "@/data/schedule/generateWeek";
 import Modal from "@/components/ui/Modal/Modal";
 import { InputField } from "@/components/ui/InputField/InputField";
-import { X, Check } from "lucide-react";
+import { X, Check, FolderOpen } from "lucide-react";
 import SubtleButton from "@/components/ui/SubtleButton/SubtleButton";
 import { TimeField } from "@/components/ui/TimeField/TimeField";
 import SelectField from "@/components/ui/SelectField/SelectField";
+import DropdownMenu from "@/components/ui/DropdownMenu/DropdownMenu";
 
 export default function TimetablePage() {
   const [anchor, setAnchor] = useState(new Date("2025-10-21"));
@@ -29,12 +30,15 @@ export default function TimetablePage() {
 
   const [isNewOpen, setIsNewOpen] = useState(false);
 
+  const [eventModalOpen, setEventModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+
   const [form, setForm] = useState({
     title: "",
     date: "2025-10-21",
     start: "10:00",
     end: "11:00",
-    zyklus: "Z1",           
+    zyklus: "Z1",
   });
 
   const events: CalendarEvent[] = useMemo(() => {
@@ -63,6 +67,39 @@ export default function TimetablePage() {
 
   const handleCreate = () => {
     setIsNewOpen(false);
+  };
+
+  const [desc, setDesc] = useState("");
+  const [attachments, setAttachments] = useState<UIAttachment[]>([
+    {
+      id: "a1",
+      kind: "PDF",
+      name: "Wissenshaft.pdf",
+      addedAgo: "12 minutes ago",
+      downloadUrl: "/api/files/a1/download",
+    },
+  ]);
+
+  type UIAttachment = {
+    id: string;
+    kind: "PDF" | "IMG" | "DOC" | "OTHER";
+    name: string;
+    addedAgo: string;
+    downloadUrl?: string;
+  };
+
+  const handleAttachmentDownload = (att: UIAttachment) => {
+    const a = document.createElement("a");
+    a.href = att.downloadUrl || "#";
+    a.download = att.name;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const handleAttachmentDelete = (attId: string) => {
+    setAttachments(prev => prev.filter(a => a.id !== attId));
   };
 
   return (
@@ -101,6 +138,10 @@ export default function TimetablePage() {
           onNextWeek={() => setAnchor(a => addDays(a, +7))}
           events={events}
           onToggleAttend={handleToggleAttend}
+          onEventClick={(ev) => {                 
+            setSelectedEvent(ev);
+            setEventModalOpen(true);
+          }}
         />
       </div>
       <Modal
@@ -115,7 +156,7 @@ export default function TimetablePage() {
         contentBg="#FEFFEF"
         footerBg="#FEFFEF"
         footer={
-          <div className="contents"> 
+          <div className="contents">
             <div>
               <SubtleButton
                 variant="outline"
@@ -170,7 +211,7 @@ export default function TimetablePage() {
                 id="start"
                 label="Starting time"
                 value={form.start}
-                stepMinutes={5}               
+                stepMinutes={5}
                 onChange={(v) => setForm({ ...form, start: v })}
               />
               <TimeField
@@ -209,7 +250,122 @@ export default function TimetablePage() {
           </form>
         </div>
       </Modal>
+      <Modal
+        isOpen={eventModalOpen}
+        onClose={() => setEventModalOpen(false)}
+        title={selectedEvent ? selectedEvent.title : "Subject"}
+        width="960px"
+        height="560px"
+        footerHeight="0px"
+        headerBg="#B0A4E4"
+        headerColor="#000"
+        contentBg="#FEFFEF"
+        footer={undefined}
+      >
+        <div className="px-6 md:px-10 lg:px-12 py-6 font-mono text-black">
+          {/* ===== Description ===== */}
+          <section className="space-y-3 font-mono">
+            <div className="flex items-center gap-4 my-4">
+              <TextAlignStart className="size-5" />
+              <h3 className="text-m font-normal">Description</h3>
+            </div>
 
+            <textarea
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              placeholder="Add a more detailed description..."
+              className="
+        w-full min-h-[160px]
+        rounded-[10px] border border-black/50
+        px-4 py-3 text-base leading-relaxed
+        placeholder:text-black/30
+        bg-white
+      "
+            />
+
+            <div className="flex items-center gap-3 pt-1">
+              <AccentButton
+                type="button"
+                onClick={() => {/* TODO: save desc */ }}
+                className="px-4 py-2 rounded-lg font-semibold bg-[#FF4E8A] text-white w-24 justify-center"
+              >
+                Save
+              </AccentButton>
+              <SubtleButton
+                type="button"
+                onClick={() => setDesc("")}
+                className="px-4 py-2 rounded-lg font-semibold bg-black/10 text-black w-24 justify-center"
+              >
+                Cancel
+              </SubtleButton>
+            </div>
+          </section>
+
+          {/* ===== Attachments ===== */}
+          <section className="mt-10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <FolderOpen className="size-5" />
+                <h3 className="text-m font-normal">Attachements</h3>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {/* TODO: open file picker */ }}
+                className="px-5 py-1 rounded-lg font-normal text-white bg-[#B0A4E4] w-20 justify-center"
+              >
+                Add
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-6">
+              {attachments.map((att) => (
+                <div key={att.id} className="grid grid-cols-[88px_1fr_auto] items-center gap-8">
+                  <div
+                    className="inline-grid place-items-center w-[88px] h-[44px]
+                     rounded-lg border border-[#BABABA] bg-[#E9EADA]
+                     text-sm font-extrabold"
+                  >
+                    {att.kind}
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="font-semibold font-mono text-sm truncate">
+                      {att.name}
+                    </div>
+                    <div className="text-black/50 font-mono font-semibold text-xs mt-1">
+                      added {att.addedAgo}
+                    </div>
+                  </div>
+
+                  <DropdownMenu
+                    items={[
+                      {
+                        label: "Download",
+                        onClick: () => handleAttachmentDownload(att),
+                      },
+                      {
+                        label: "Delete",
+                        labelColor: "#EB171A",
+                        onClick: () => handleAttachmentDelete(att.id),
+                      },
+                    ]}
+                    trigger={
+                      <div className="w-10 py-2 bg-[#F4F4F4] rounded-2xl flex flex-row justify-center items-center border border-gray-400 gap-[2px] hover:bg-gray-200">
+                        <span className="w-1 h-1 bg-black rounded-full"></span>
+                        <span className="w-1 h-1 bg-black rounded-full"></span>
+                        <span className="w-1 h-1 bg-black rounded-full"></span>
+                      </div>
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+
+        </div>
+
+      </Modal>
     </Page>
   );
 }
