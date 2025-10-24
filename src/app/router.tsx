@@ -40,7 +40,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Blank title="Home" /> },
       { path: "timetable", element: <TimetablePage /> },
-      { path: "board", element: <BoardPage /> },
+      { path: "board", element: <ProjectsPage /> },
       { path: "library", element: <MaterialLibPage /> },
       { path: "library/:folderName", element: <FolderItemsPage /> },
       { path: "tasks", element: <TasksPage /> },
@@ -50,9 +50,9 @@ export const router = createBrowserRouter([
       { path: "profile", element: <Blank title="Profile" /> },
       { path: "logout", element: <Blank title="Logout" /> },
       { path: "projects/:id", element: <KanbanPage /> },
+      { path: "flash", element: <FlashListPage /> },
       { path: "/flash/:id", element: <FlashSetPage /> },
-      {path: "flash/:id/review", element: <FlashReviewPage />},
-
+      { path: "flash/:id/review", element: <FlashReviewPage /> },
     ],
   },
   {
