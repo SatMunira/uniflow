@@ -25,7 +25,6 @@ export function ProjectCard({ project, onClick }: Props) {
       className="text-left w-full cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black/40 rounded-[18px]"
     >
       <div className="h-48 flex flex-col rounded-[18px] border-[1.5px] border-black bg-white shadow-[0_6px_18px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] transition-shadow">
-        {/* Фиолетовая шапка с текстом */}
         <div className={`h-28 rounded-t-[18px] bg-gradient-to-r ${gradient} px-6 pt-6 pb-2 flex items-center`}>
           <h3 className="select-text text-black font-mono text-lg leading-tight">
             {project.title}
