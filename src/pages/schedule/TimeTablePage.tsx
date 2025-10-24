@@ -16,6 +16,8 @@ import Modal from "@/components/ui/Modal/Modal";
 import { InputField } from "@/components/ui/InputField/InputField";
 import { X, Check } from "lucide-react";
 import SubtleButton from "@/components/ui/SubtleButton/SubtleButton";
+import { TimeField } from "@/components/ui/TimeField/TimeField";
+import SelectField from "@/components/ui/SelectField/SelectField";
 
 export default function TimetablePage() {
   const [anchor, setAnchor] = useState(new Date("2025-10-21"));
@@ -26,11 +28,13 @@ export default function TimetablePage() {
   );
 
   const [isNewOpen, setIsNewOpen] = useState(false);
+
   const [form, setForm] = useState({
     title: "",
     date: "2025-10-21",
     start: "10:00",
     end: "11:00",
+    zyklus: "Z1",           
   });
 
   const events: CalendarEvent[] = useMemo(() => {
@@ -60,7 +64,6 @@ export default function TimetablePage() {
   const handleCreate = () => {
     setIsNewOpen(false);
   };
-
 
   return (
     <Page>
@@ -112,8 +115,7 @@ export default function TimetablePage() {
         contentBg="#FEFFEF"
         footerBg="#FEFFEF"
         footer={
-          <div className="contents"> {/* grid задаёт .footer */}
-            {/* Left: Cancel */}
+          <div className="contents"> 
             <div>
               <SubtleButton
                 variant="outline"
@@ -130,7 +132,6 @@ export default function TimetablePage() {
               </SubtleButton>
             </div>
 
-            {/* Right: Save */}
             <div>
               <AccentButton
                 onClick={handleCreate}
@@ -147,8 +148,6 @@ export default function TimetablePage() {
             </div>
           </div>
         }
-
-
       >
         <div className="px-8 md:px-12 lg:px-16">
           <form
@@ -158,7 +157,6 @@ export default function TimetablePage() {
               handleCreate();
             }}
           >
-            {/* Title */}
             <InputField
               id="subject"
               label="Subject name"
@@ -167,29 +165,23 @@ export default function TimetablePage() {
               onChange={(e) => setForm({ ...form, title: (e.target as HTMLInputElement).value })}
             />
 
-            {/* 2 колонки — Start / End */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-              <InputField
+              <TimeField
                 id="start"
                 label="Starting time"
-                fieldSize="md"
-                type="time"
                 value={form.start}
-                onChange={(e) => setForm({ ...form, start: (e.target as HTMLInputElement).value })}
+                stepMinutes={5}               
+                onChange={(v) => setForm({ ...form, start: v })}
               />
-              <InputField
+              <TimeField
                 id="end"
                 label="Ending time"
-                fieldSize="md"
-                type="time"
                 value={form.end}
-                onChange={(e) => setForm({ ...form, end: (e.target as HTMLInputElement).value })}
-
+                stepMinutes={5}
+                onChange={(v) => setForm({ ...form, end: v })}
               />
             </div>
 
-            {/* Ab/Bis KW — если нужны тоже как у тайтла */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <InputField
                 id="ab-kw"
@@ -207,16 +199,13 @@ export default function TimetablePage() {
               />
             </div>
 
-            <InputField
+            <SelectField
               id="zyklus"
               label="Zyklus"
-              fieldSize="md"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: (e.target as HTMLInputElement).value })}
+              value={form.zyklus}
+              options={["Z1", "Z2", "Z3"]}
+              onChange={(v) => setForm({ ...form, zyklus: v })}
             />
-
-            {/* Zyklus — временно как простой текст, позже сделаем такой же SelectField со всплывающим лейблом */}
-            {/* <InputField id="zyklus" label="Zyklus" fieldSize="md" /> */}
           </form>
         </div>
       </Modal>
