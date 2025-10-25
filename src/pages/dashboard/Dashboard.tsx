@@ -115,6 +115,7 @@ export default function DashboardPage() {
             try {
                 setLoading(true);
                 const data = await getDashboard();
+                console.log(data)
                 setDashboardData(data);
                 setError(null);
             } catch (err) {
@@ -307,18 +308,18 @@ export default function DashboardPage() {
                                 <div className="text-xs text-center opacity-50 py-4">No upcoming classes</div>
                             ) : (
                                 upcomingSchedules.map((schedule) => {
-                                    const scheduleDate = new Date(schedule.date);
-                                    const startTime = new Date(schedule.startTime);
-                                    const dateLabel = scheduleDate.toLocaleDateString("en-GB", {
-                                        weekday: "long",
-                                        day: "numeric",
-                                        month: "long",
-                                        year: "numeric",
-                                    });
-                                    const timeLabel = startTime.toLocaleTimeString([], {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    });
+                                    // const scheduleDate = new Date(schedule.date);
+                                    // const startTime = new Date(schedule.startTime);
+                                    // const dateLabel = scheduleDate.toLocaleDateString("en-GB", {
+                                    //     weekday: "long",
+                                    //     day: "numeric",
+                                    //     month: "long",
+                                    //     year: "numeric",
+                                    // });
+                                    // const timeLabel = startTime.toLocaleTimeString([], {
+                                    //     hour: "2-digit",
+                                    //     minute: "2-digit",
+                                    // });
 
                                     return (
                                         <Link
@@ -330,9 +331,9 @@ export default function DashboardPage() {
                                             }}
                                         >
                                             <div className="text-[9px] opacity-90">
-                                                {dateLabel} · {timeLabel}
+                                                {schedule.dayOfWeek} · {schedule.startTime}–{schedule.endTime}
                                             </div>
-                                            <div className="text-xs font-extrabold">{schedule.title}</div>
+                                            <div className="text-xs font-extrabold">{schedule.subject.name}</div>
                                         </Link>
                                     );
                                 })

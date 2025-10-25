@@ -26,6 +26,7 @@ export interface DashboardTask {
 export interface DashboardSchedule {
   id: string;
   title: string;
+  dayOfWeek: string;
   startTime: string;
   endTime: string;
   date: string;
