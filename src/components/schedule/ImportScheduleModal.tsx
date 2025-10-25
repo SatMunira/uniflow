@@ -21,6 +21,8 @@ export function ImportScheduleModal({
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<ScheduleParseResponse | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false); // ✅ Новое состояние
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +36,7 @@ export function ImportScheduleModal({
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file || !confirmDelete) return;
 
     setUploading(true);
     setError(null);
@@ -55,14 +57,16 @@ export function ImportScheduleModal({
     }
   };
 
-  const handleClose = () => {
+   const handleClose = () => {
     setFile(null);
     setUploading(false);
     setSuccess(false);
     setError(null);
     setResponse(null);
+    setConfirmDelete(false);
     onClose();
   };
+
 
   return (
     <Modal
@@ -138,6 +142,9 @@ export function ImportScheduleModal({
                     {(file.size / 1024).toFixed(2)} KB
                   </div>
                 </div>
+
+
+                
                 {!uploading && !success && (
                   <button
                     className="flex-shrink-0 text-xs text-blue-600 hover:text-blue-800 px-3 py-1 rounded hover:bg-blue-50 transition-colors"
@@ -164,6 +171,25 @@ export function ImportScheduleModal({
               </div>
             )}
           </div>
+
+{/* ⚠️ Warning checkbox */}
+          {file && !success && (
+            <div className="mt-4 flex items-start gap-2">
+              <input
+                type="checkbox"
+                id="confirmDelete"
+                checked={confirmDelete}
+                onChange={(e) => setConfirmDelete(e.target.checked)}
+                className="mt-0.5 size-4 accent-red-600 cursor-pointer"
+              />
+              <label
+                htmlFor="confirmDelete"
+                className="text-xs text-gray-700 cursor-pointer select-none"
+              >
+I understand that <span className="font-semibold text-red-600">all existing subjects and related data</span> will be deleted before importing the new schedule.              </label>
+            </div>
+          )}
+
 
           {/* Error message */}
           {error && (
