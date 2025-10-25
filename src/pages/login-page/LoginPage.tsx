@@ -22,11 +22,10 @@ export default function LoginPage() {
   const error = validationError || storeError;
 
   useEffect(() => {
-    // Clear errors when component mounts
-    return () => {
-      clearError();
-    };
-  }, [clearError]);
+  return () => {
+    clearError();
+  };
+}, [clearError]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

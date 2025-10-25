@@ -10,10 +10,9 @@ interface PublicRouteProps {
  * Если пользователь уже авторизован, перенаправляет на главную страницу
  */
 export function PublicRoute({ children }: PublicRouteProps) {
-  const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
 
-  if (user) {
-    // Если пользователь уже авторизован, перенаправляем на главную
+  if (token) {
     return <Navigate to="/" replace />;
   }
 
