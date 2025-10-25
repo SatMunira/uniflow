@@ -62,14 +62,14 @@ export default function KanbanPage() {
       id: "c1",
       author: "Ernaz Erkinbekov",
       ago: "25 minutes ago",
-      text: "Кто скажет “хуй”, тот дурак",
+      text: "Ich bin fertig.",
       badgeClass: "bg-lime-200",
     },
     {
       id: "c2",
       author: "Das Tank",
       ago: "just now",
-      text: "Хуй",
+      text: "Cool",
       badgeClass: "bg-sky-200",
     },
   ]);
