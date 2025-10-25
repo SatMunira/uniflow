@@ -27,6 +27,9 @@ export function generateOccurrencesForWeekView(
   anyDateInWeek: Date,
   viewCycle: WeekCycle, 
 ): Occurrence[] {
+
+console.log(subjects)
+
   const weekStart = startOfWeek(anyDateInWeek, { weekStartsOn: 1 }); 
   const kw = getISOWeek(anyDateInWeek);
   const year = anyDateInWeek.getFullYear();

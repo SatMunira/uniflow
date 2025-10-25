@@ -11,7 +11,8 @@ export type ApiSchedule = {
   id: string;
   dayOfWeek:
     | 0|1|2|3|4|5|6
-    | "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
+    | "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday"
+    | "Sonntag"|"Montag"|"Dienstag"|"Mittwoch"|"Donnerstag"|"Freitag"|"Samstag";
   startTime: string;
   endTime: string;
   weekType: "all" | "odd" | "even";

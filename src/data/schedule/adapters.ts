@@ -11,8 +11,20 @@ function weekTypeToCycle(w: "all"|"odd"|"even"): WeekCycle {
 // src/data/schedule/adapters.ts
 function dayToNum(d: ApiSchedule["dayOfWeek"]): 0|1|2|3|4|5|6 {
   if (typeof d === "number") return d;
-  const map = {Sunday:0, Monday:1, Tuesday:2, Wednesday:3, Thursday:4, Friday:5, Saturday:6} as const;
-  return map[d] ?? 1;
+
+  // Английские дни недели
+  const enMap: Record<string, 0|1|2|3|4|5|6> = {
+    Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3,
+    Thursday: 4, Friday: 5, Saturday: 6
+  };
+
+  // Немецкие дни недели
+  const deMap: Record<string, 0|1|2|3|4|5|6> = {
+    Sonntag: 0, Montag: 1, Dienstag: 2, Mittwoch: 3,
+    Donnerstag: 4, Freitag: 5, Samstag: 6
+  };
+
+  return enMap[d] ?? deMap[d] ?? 1;
 }
 
 export function composeSubject(subj: ApiSubject, schedules: ApiSchedule[], year: number): Subject {

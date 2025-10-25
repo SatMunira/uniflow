@@ -5,7 +5,7 @@ import { Toolbar } from "@/components/layout/Toolbar";
 import { WeekNav } from "@/pages/schedule/WeekNav";
 import type { WeekCycle } from "@/entities/schedule";
 import { AccentButton } from "@/components/ui/AccentButton/AccentButton";
-import { Plus, TextAlignStart } from "lucide-react";
+import { Plus, TextAlignStart, Upload } from "lucide-react";
 import { WeekCalendar } from "@/components/ui/Calender/WeekCalendar";
 import { addDays } from "date-fns";
 import { generateOccurrencesForWeekView } from "@/data/schedule/generateWeek";
@@ -20,6 +20,7 @@ import SelectField from "@/components/ui/SelectField/SelectField";
 import DropdownMenu from "@/components/ui/DropdownMenu/DropdownMenu";
 import { useSubjectsWithSchedules } from "@/hooks/useSubjects";
 import type { Subject } from "@/entities/schedule";
+import { ImportScheduleModal } from "@/components/schedule/ImportScheduleModal";
 
 export default function TimetablePage() {
   const [anchor, setAnchor] = useState(new Date("2025-10-21"));
@@ -37,9 +38,9 @@ export default function TimetablePage() {
   useEffect(() => {
     const next = generateOccurrencesForWeekView(subjects, anchor, viewCycle);
     setOccs(next);
-    console.log("[GEN] occs after subjects:", next.length, next);
   }, [subjects, anchor, viewCycle]);
   const [isNewOpen, setIsNewOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
 
   const [eventModalOpen, setEventModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
@@ -136,10 +137,16 @@ export default function TimetablePage() {
           />
         }
         right={
-          <AccentButton variant="outline" className="gap-2" onClick={() => setIsNewOpen(true)}>
-            <Plus className="size-4" />
-            New
-          </AccentButton>
+          <div className="flex items-center gap-3">
+            <AccentButton variant="outline" className="gap-2" onClick={() => setIsImportOpen(true)}>
+              <Upload className="size-4" />
+              Import
+            </AccentButton>
+            <AccentButton variant="outline" className="gap-2" onClick={() => setIsNewOpen(true)}>
+              <Plus className="size-4" />
+              New
+            </AccentButton>
+          </div>
         }
       />
 
@@ -382,6 +389,16 @@ export default function TimetablePage() {
         </div>
 
       </Modal>
+
+      {/* Import Schedule Modal */}
+      <ImportScheduleModal
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+        onSuccess={() => {
+          // Reload subjects to get new schedules
+          window.location.reload();
+        }}
+      />
     </Page>
   );
 }
