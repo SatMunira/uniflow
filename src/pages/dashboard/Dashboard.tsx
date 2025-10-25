@@ -253,7 +253,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Calendar */}
-                    <CalendarWidget />
+                    <CalendarWidgetImported />
 
                     {/* Tasks */}
                     <div className="bg-white border border-black rounded-xl p-4 font-mono flex flex-col h-full overflow-hidden">
@@ -285,6 +285,7 @@ export default function DashboardPage() {
                 </div>
 
                
+
 
                 {/* bottom: illustration placeholder + upcoming + pomodoro */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1 min-h-0">

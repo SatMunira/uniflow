@@ -19,6 +19,7 @@ import FlashSetPage from "@/pages/flash/FlashSetPage";
 import FlashReviewPage from "@/pages/flash/FlashReviewPage";
 import DashboardPage from "@/pages/dashboard/Dashboard";
 import FlashReviewResultPage from "@/pages/flash/FlashReviewResultPage";
+import ProfileModalRoute from "@/pages/profile/ProfileModalRoute";
 
 const Blank = ({ title }: { title: string }) => (
   <Page>
@@ -49,14 +50,13 @@ export const router = createBrowserRouter([
       { path: "tasks/:subjectSlug", element: <TaskItemPage /> },
       { path: "notes", element: <Blank title="Notes" /> },
       { path: "pomodoro", element: <PomodoroPage /> },
-      { path: "profile", element: <Blank title="Profile" /> },
       { path: "logout", element: <Blank title="Logout" /> },
       { path: "projects/:id", element: <KanbanPage /> },
       { path: "flash", element: <FlashListPage /> },
       { path: "/flash/:id", element: <FlashSetPage /> },
-      {path: "flash/:id/review", element: <FlashReviewPage />},
-      {path: "flash/:id/results", element: <FlashReviewResultPage />},
-
+      { path: "flash/:id/review", element: <FlashReviewPage /> },
+      { path: "flash/:id/results", element: <FlashReviewResultPage /> },
+      { path: "profile", element: <ProfileModalRoute /> },
     ],
   },
   {
