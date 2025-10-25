@@ -18,6 +18,7 @@ import FlashListPage from "@/pages/flash/FlashListPage";
 import FlashSetPage from "@/pages/flash/FlashSetPage";
 import FlashReviewPage from "@/pages/flash/FlashReviewPage";
 import DashboardPage from "@/pages/dashboard/Dashboard";
+import FlashReviewResultPage from "@/pages/flash/FlashReviewResultPage";
 
 const Blank = ({ title }: { title: string }) => (
   <Page>
@@ -53,8 +54,26 @@ export const router = createBrowserRouter([
       { path: "projects/:id", element: <KanbanPage /> },
       { path: "flash", element: <FlashListPage /> },
       { path: "/flash/:id", element: <FlashSetPage /> },
-      { path: "flash/:id/review", element: <FlashReviewPage /> },
+      {path: "flash/:id/review", element: <FlashReviewPage />},
+      {path: "flash/:id/results", element: <FlashReviewResultPage />},
+
     ],
+  },
+  {
+    path: "/login",
+    element: (
+      <PublicRoute>
+        <LoginPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <PublicRoute>
+        <RegisterPage />
+      </PublicRoute>
+    ),
   },
   {
     path: "/login",
