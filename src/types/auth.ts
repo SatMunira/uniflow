@@ -18,6 +18,5 @@ export interface LoginDTO {
 }
 
 export interface AuthResponse {
-  user: User;
   token?: string;
 }

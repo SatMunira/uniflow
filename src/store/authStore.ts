@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { User, RegisterDTO, LoginDTO } from "@/types/auth";
 import { authApi } from "@/api/auth";
-import { clearAllCookies } from "@/utils/cookies";
 
 interface AuthState {
   user: User | null;
@@ -49,9 +48,9 @@ export const useAuthStore = create<AuthState>()(
       login: async (data: LoginDTO) => {
         set({ isLoading: true, error: null });
         try {
-          const user = await authApi.login(data);
+          const responseToken = await authApi.login(data);
           set({
-            user,
+            token: responseToken.token,
             isLoading: false,
             error: null
           });
@@ -68,7 +67,7 @@ export const useAuthStore = create<AuthState>()(
 
       logout: () => {
         // Clear all cookies
-        clearAllCookies();
+        // clearAllCookies();
 
         // Clear localStorage (handled by persist middleware)
         set({

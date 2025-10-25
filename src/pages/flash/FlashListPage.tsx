@@ -1,45 +1,30 @@
-import * as React from "react";
 import { Page } from "@/components/layout/Page";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { FlashListItem } from "@/components/flash/FlashListItem";
-import { flashSetsMock, type FlashSet } from "@/mocks/flashSet";
 import FloatingButton from "@/components/ui/FloatingButton/FloatingButton";
-
-function groupByMonth(sets: FlashSet[]) {
-  const intlMonth = new Intl.DateTimeFormat("de-DE", { month: "long" });
-  const groups = new Map<string, FlashSet[]>();
-
-  sets.forEach((s) => {
-    const d = new Date(s.createdAt);
-    const key = `${intlMonth.format(d)} ${d.getFullYear()}`; // Juli 2025
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key)!.push(s);
-  });
-
-  return Array.from(groups.entries()).sort((a, b) => {
-    const [ma, ya] = a[0].split(" ");
-    const [mb, yb] = b[0].split(" ");
-    const ord = (m: string) =>
-      new Date(`${m} 01, ${yb}`).getMonth(); 
-    if (ya !== yb) return Number(yb) - Number(ya);
-    return ord(mb) - ord(ma);
-  });
-}
+import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  getSubjectsWithFlashcards,
+  type SubjectWithFlashcards,
+} from "@/api/subjectWithFlashcards";
 
 export default function FlashListPage() {
-  const [query, setQuery] = React.useState("");
-  const [activeId, setActiveId] = React.useState<string | null>(flashSetsMock[0]?.id ?? null);
+  const [query, setQuery] = useState("");
+  const [data, setData] = useState<SubjectWithFlashcards[]>([]);
 
-  const filtered = React.useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return flashSetsMock;
-    return flashSetsMock.filter((s) =>
-      [s.title, s.author.username].some((v) => v.toLowerCase().includes(q))
-    );
-  }, [query]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getSubjectsWithFlashcards();
+        setData(result);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  const grouped = React.useMemo(() => groupByMonth(filtered), [filtered]);
-
+    fetchData();
+  }, []);
   return (
     <Page>
       <PageHeader title="Flash cards" />
@@ -51,30 +36,22 @@ export default function FlashListPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search a card"
-            className="w-full h-12 rounded-xl border border-black/20 bg-white pl-4 pr-12 outline-none focus:ring-2 focus:ring-black/15"
+            className="w-full font-mono h-12 rounded-xl border border-black/20 bg-white pl-4 pr-12 outline-none focus:ring-2 focus:ring-black/15"
           />
           <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-black/50">
-            🔍
+            <Search />
           </span>
         </div>
       </div>
 
       {/* Лента группами */}
-      <div className="space-y-8">
-        {grouped.map(([title, items]) => (
-          <section key={title}>
-            <div className="mx-2 mb-2 font-mono text-xs uppercase tracking-widest text-black/60">
-              im {title.toUpperCase()}
+      <div className="space-y-4">
+        {data &&
+          data.map((item) => (
+            <div key={item.id}>
+              <FlashListItem set={item}/>
             </div>
-            <div className="space-y-4">
-              {items.map((s) => (
-                <div key={s.id} onMouseEnter={() => setActiveId(s.id)}>
-                  <FlashListItem {...({ set: s, active: activeId === s.id } as any)} />
-                </div>
-              ))}
-            </div>
-          </section>
-        ))}
+          ))}
       </div>
 
       {/* FAB для создания набора прямо со списка */}

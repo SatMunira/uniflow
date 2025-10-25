@@ -1,8 +1,7 @@
 import * as React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { flashTermsMock, type FlashTerm } from "@/mocks/flashTerms";
-import { flashSetsMock } from "@/mocks/flashSet";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { type Flashcard, getFlashcardsBySubjectId } from "@/api/flashcards";
 
 function shuffle<T>(arr: T[]) {
   const a = [...arr];
@@ -15,29 +14,40 @@ function shuffle<T>(arr: T[]) {
 
 export default function FlashReviewPage() {
   const { id = "" } = useParams<{ id: string }>();
+
+  const [flashcards, setFlashcards] = React.useState<Flashcard[]>([]);
+
+  React.useEffect(() => {
+    const fetchFlashcards = async () => {
+      try {
+        const data = await getFlashcardsBySubjectId(id);
+        setFlashcards(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchFlashcards();
+  }, [id]);
+
   const navigate = useNavigate();
-  const set = flashSetsMock.find((s) => s.id === id);
 
-  const allTerms = React.useMemo(
-    () => flashTermsMock.filter((t) => t.setId === id),
-    [id]
-  );
-
-  const [queue, setQueue] = React.useState<FlashTerm[]>(() => shuffle(allTerms));
-  const [idx, setIdx] = React.useState(0);
-  const [flipped, setFlipped] = React.useState(false);
-
-  const [knownIds, setKnownIds] = React.useState<Set<string>>(new Set());
-
-  const total = allTerms.length;
-  const know = knownIds.size;
-  const learning = Math.max(0, total - know);
+  // очередь карт
+  const [queue, setQueue] = React.useState<Flashcard[]>([]);
+  const [idx, setIdx] = React.useState(0); // номер текущей карты
+  React.useEffect(() => {
+    if (flashcards.length > 0) {
+      setQueue(shuffle(flashcards));
+      setIdx(0);
+    }
+  }, [flashcards]);
+  const [flipped, setFlipped] = React.useState(false); // показана задняя сторона?
+  const [know, setKnow] = React.useState(0);
+  const [learning, setLearning] = React.useState(() => queue.length);
 
   const current = queue[idx];
 
-  React.useEffect(() => {
-    if (!set || total === 0) navigate(`/flash/${id}`);
-  }, [set, total, id, navigate]);
+  console.log(current);
 
   function nextCard(correct: boolean) {
     if (!current) return;
@@ -84,10 +94,18 @@ export default function FlashReviewPage() {
   }, [idx, queue.length, knownIds, total, allTerms, id, navigate]);
 
   const progress = total
-    ? Math.round(((knownIds.size + idx / Math.max(queue.length, 1)) / total) * 100)
+    ? Math.round(((idx + (flipped ? 0.5 : 0)) / total) * 100)
     : 0;
 
-  if (!set || !current) return null;
+  if (!flashcards) {
+    return (
+      <div className="min-h-screen grid place-items-center bg-[#bba9ea]">
+        <div className="rounded-xl bg-white/90 px-6 py-4 font-mono">
+          Set not found
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-[#bba9ea]">
@@ -118,10 +136,10 @@ export default function FlashReviewPage() {
 
       <div className="mx-auto mt-10 max-w-4xl px-6">
         <CardStack
-          index={idx + 1}
+          index={idx}
           total={total}
-          front={current.front}
-          back={current.back}
+          front={current.question}
+          back={current.answer}
           flipped={flipped}
           onFlip={() => setFlipped((v) => !v)}
         />

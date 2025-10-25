@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
  * Если пользователь не авторизован, перенаправляет на /login
  */
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore((state) => state.token);
   const location = useLocation();
 
   if (!user) {

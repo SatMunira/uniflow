@@ -1,6 +1,6 @@
-import type { Task } from "@/entities/subjectTasks";
 import TaskCard from "./TaskCard";
 import EmptyState from "./EmptyState";
+import type { Task } from "@/api/tasks";
 
 interface TaskSectionProps {
   title: string;

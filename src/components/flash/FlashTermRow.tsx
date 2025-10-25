@@ -1,4 +1,4 @@
-import type { FlashTerm } from "@/mocks/flashTerms";
+import type { Flashcard } from "@/api/flashcards";
 import { Trash2 } from "lucide-react";
 
 export function FlashTermRow({
@@ -6,7 +6,7 @@ export function FlashTermRow({
     showBack,
     onDelete,
 }: {
-    term: FlashTerm;
+    term: Flashcard;
     showBack: boolean;
     onDelete?: (id: string) => void;
 }) {
@@ -19,10 +19,10 @@ export function FlashTermRow({
         >
             <div className="grid grid-cols-2">
                 <div className="p-3 md:p-4 border-r border-black/10 text-[13px] leading-snug font-mono text-black/90">
-                    {term.front}
+                    {term.question}
                 </div>
                 <div className="p-3 md:p-4 text-[13px] leading-snug font-mono text-black/90">
-                    {showBack ? term.back : <span className="opacity-50">••• hidden</span>}
+                    {showBack ? term.answer : <span className="opacity-50">••• hidden</span>}
                 </div>
             </div>
 

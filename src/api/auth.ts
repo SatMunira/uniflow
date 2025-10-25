@@ -1,4 +1,4 @@
-import type { RegisterDTO, LoginDTO, User } from "@/types/auth";
+import type { RegisterDTO, LoginDTO, User, AuthResponse } from "@/types/auth";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://uniflow.sharshekeev13.dev";
 
@@ -21,9 +21,10 @@ export const authApi = {
     return response.json();
   },
 
-  async login(data: LoginDTO): Promise<User> {
+  async login(data: LoginDTO): Promise<AuthResponse> {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",

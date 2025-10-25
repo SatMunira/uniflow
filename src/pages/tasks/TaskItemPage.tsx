@@ -2,32 +2,67 @@ import { useParams } from "react-router-dom";
 import { Page } from "@/components/layout/Page";
 import { PageHeader } from "@/components/layout/PageHeader";
 import TaskSection from "./components/TaskSection";
-import { useTaskManagement } from "./hooks/useTaskManagement";
 import FloatingButton from "@/components/ui/FloatingButton/FloatingButton";
 import { Calendar } from "lucide-react";
+import { getTasksBySubjectId, type Task } from "@/api/tasks";
+import { useEffect, useMemo, useState } from "react";
 
 export default function TaskItemPage() {
   const { subjectSlug } = useParams<{ subjectSlug: string }>();
-  const { subject, handleToggleTask } = useTaskManagement(subjectSlug);
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (subjectSlug) {
+        try {
+          const data = await getTasksBySubjectId(subjectSlug);
+          setTasks(data);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+
+    fetchTasks();
+  }, [subjectSlug]);
+
+  const todoTasks = useMemo(
+    () => tasks.filter((task) => task.status !== "DONE"),
+    [tasks]
+  );
+  const completedTasks = useMemo(
+    () => tasks.filter((task) => task.status === "DONE"),
+    [tasks]
+  );
+
+  const handleToggleTask = (taskId: string) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === taskId
+          ? { ...task, status: task.status === "DONE" ? "TODO" : "DONE" }
+          : task
+      )
+    );
+  };
 
   // Loading or not found state
-  if (!subject) {
+  if (!tasks) {
     return (
       <Page>
         <PageHeader title="Subject not found" backButton="/tasks" />
         <div className="p-4">
-          <p>Subject "{subjectSlug}" not found.</p>
+          <p>Subject not found.</p>
         </div>
       </Page>
     );
   }
 
-  const todoTasks = subject.getTasksByStatus(false);
-  const completedTasks = subject.getTasksByStatus(true);
-
   return (
     <Page>
-      <PageHeader title={subject.name} backButton="/tasks" />
+      <PageHeader
+        title={tasks[0]?.subject?.name ?? "Subject"}
+        backButton="/tasks"
+      />
 
       <div className="pb-4">
         <TaskSection
@@ -65,11 +100,8 @@ export default function TaskItemPage() {
                 />
                 <label className="font-mono text-xs mb-1">Due Date</label>
                 <div className="bg-white px-2 py-2 border border-black rounded-md mb-3 flex flex-row items-center">
-                  <input
-                    type="text"
-                    className="outline-0 w-full"
-                  />
-                  <Calendar size={16}/>
+                  <input type="text" className="outline-0 w-full" />
+                  <Calendar size={16} />
                 </div>
                 <button className="bg-accent px-2 py-2 text-white font-mono rounded-md">
                   Create

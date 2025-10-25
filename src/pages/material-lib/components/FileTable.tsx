@@ -1,8 +1,8 @@
-import type { MaterialItem } from "@/entities/library";
 import FileTableRow from "./FileTableRow";
+import type { FileItem } from "@/api/files";
 
 interface FileTableProps {
-  items: MaterialItem[];
+  items: FileItem[];
   onDownload: (fileName: string) => void;
   onPreview: (fileName: string) => void;
   onDelete: (fileName: string) => void;
@@ -32,7 +32,7 @@ export default function FileTable({
           <tbody className="text-sm font-semibold">
             {items.map((item) => (
               <FileTableRow
-                key={item.name}
+                key={item.id}
                 item={item}
                 onDownload={onDownload}
                 onPreview={onPreview}
