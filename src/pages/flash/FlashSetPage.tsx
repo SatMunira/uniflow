@@ -68,7 +68,7 @@ export default function FlashSetPage() {
 
             />
 
-            {/* панель: слева счётчик, справа кнопки на одном уровне */}
+        
             <div className="mb-3 flex items-center justify-between">
                 <div className="font-mono text-[15px]">
                     Terms in this set ({terms.length})
@@ -124,7 +124,7 @@ export default function FlashSetPage() {
                         ...prev,
                         ...items.map((it) => ({
                             id: crypto.randomUUID().slice(0, 8),
-                            setId: id,              // id текущего сета
+                            setId: id,            
                             front: it.front,
                             back: it.back,
                         })),
