@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import groupProject from "@/assets/group_project.png";
 import { TomatoIcon } from "./TomatoIcon";
+import { CalendarWidget as CalendarWidgetImported } from "@/components/ui/Calender/CalendarWidget";
 
 // ------ mocks ------
 type ClassItem = { id: string; title: string; dateLabel: string; time: string; };
@@ -139,7 +140,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Calendar */}
-                    <CalendarWidget />
+                    <CalendarWidgetImported />
 
                     {/* Tasks */}
                     <div className="bg-white border border-black rounded-xl p-4 font-mono">
