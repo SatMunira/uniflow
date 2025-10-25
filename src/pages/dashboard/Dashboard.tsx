@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import groupProject from "@/assets/group_project.png";
 import { TomatoIcon } from "./TomatoIcon";
+import { CalendarWidget as CalendarWidgetImported } from "@/components/ui/Calender/CalendarWidget";
 
 // ------ mocks ------
 type ClassItem = { id: string; title: string; dateLabel: string; time: string; };
@@ -139,7 +140,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Calendar */}
-                    <CalendarWidget />
+                    <CalendarWidgetImported />
 
                     {/* Tasks */}
                     <div className="bg-white border border-black rounded-xl p-4 font-mono">
@@ -167,22 +168,33 @@ export default function DashboardPage() {
                 </div>
 
                 {/* status strip */}
-                <div className="mt-5 bg-white border border-black rounded-xl px-4 py-3 font-mono flex items-center gap-6 text-sm">
-                    <div className="flex items-center gap-2">
-                        <MapPin size={16} /> Bishkek, Kyrgyzstan
-                    </div>
-                    <div className="h-5 w-px bg-black/30" />
-                    <div className="flex items-center gap-2">
-                        <CalendarIcon size={16} /> {dateLabel}
-                    </div>
-                    <div className="h-5 w-px bg-black/30" />
-                    <div className="flex items-center gap-2">
-                        <Clock size={16} /> {timeLabel}
+                <div className="mt-1 bg-white border border-black rounded-xl px-4 py-5 font-mono">
+                    <div className="
+      grid grid-cols-1 sm:grid-cols-3
+      text-md
+  ">
+                        <div className="flex items-center justify-center gap-2 py-1">
+                            <MapPin size={16} />
+                            <span>Bishkek, Kyrgyzstan</span>
+                        </div>
+
+                        <div className="flex items-center justify-center gap-2 py-1
+                    sm:border-l sm:border-black/30">
+                            <CalendarIcon size={16} />
+                            <span>{dateLabel}</span>
+                        </div>
+
+                        <div className="flex items-center justify-center gap-2 py-1
+                    sm:border-l sm:border-black/30">
+                            <Clock size={16} />
+                            <span>{timeLabel}</span>
+                        </div>
                     </div>
                 </div>
 
+
                 {/* bottom: illustration placeholder + upcoming + pomodoro */}
-                <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-5">
                     {/* Left placeholder (картинка из макета можно добавить позже) */}
                     <div className="rounded-xl bg-transparent p-4 h-full align-middle flex justify-center items-center">
                         <img
