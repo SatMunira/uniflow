@@ -3,18 +3,14 @@ import { AuthFormCard } from "@/components/ui/AuthFormCard/AuthFormCard";
 import { FormInput } from "@/components/ui/FormInput/FormInput";
 import { FormButton } from "@/components/ui/FormButton/FormButton";
 import { FormDivider } from "@/components/ui/FormDivider/FormDivider";
-import { Link, useNavigate, useLocation } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import { useAuthStore } from "@/store/authStore";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { login, isLoading, error: storeError, clearError } = useAuthStore();
-
-  // Получаем путь, с которого пользователь был перенаправлен
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || "/";
 
   const [formData, setFormData] = useState({
     email: "",
@@ -49,8 +45,7 @@ export default function LoginPage() {
         password: formData.password,
       });
 
-      // Redirect to the page user came from or home page
-      navigate(from, { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       // Error is handled by the store
       console.error("Login failed:", err);

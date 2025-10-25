@@ -1,5 +1,5 @@
+import type { Task } from "@/api/tasks";
 import { Check, Clock } from "lucide-react";
-import type { Task } from "@/entities/subjectTasks";
 
 interface TaskCardProps {
   task: Task;
@@ -12,10 +12,28 @@ export default function TaskCard({
   onToggle,
   isCompleted = false,
 }: TaskCardProps) {
+  // Функция для расчета дней до дедлайна
+  const getDaysUntilDue = (): number => {
+    const today = new Date();
+    const dueDate = new Date(task.dueDate);
+    const diffTime = dueDate.getTime() - today.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  // Форматирование даты в человекочитаемый вид
+  const getFormattedDate = (): string => {
+    const date = new Date(task.dueDate);
+    return date.toLocaleDateString(undefined, {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   const getDaysText = () => {
     if (isCompleted) return "Completed";
 
-    const daysUntilDue = task.getDaysUntilDue();
+    const daysUntilDue = getDaysUntilDue();
     if (daysUntilDue > 0) return `${daysUntilDue} days left`;
     if (daysUntilDue === 0) return "Due today";
     return "Overdue";
@@ -61,7 +79,7 @@ export default function TaskCard({
           }`}
         >
           <Clock size={14} />
-          <span>{task.getFormattedDate()}</span>
+          <span>{getFormattedDate()}</span>
           <span className="ml-2">{getDaysText()}</span>
         </div>
 

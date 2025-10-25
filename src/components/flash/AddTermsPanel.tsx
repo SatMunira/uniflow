@@ -6,7 +6,7 @@ export type Draft = { id: string; front: string; back: string };
 type AddTermsPanelProps = {
   open: boolean;
   onClose: () => void;
-  onSave: (items: Array<{ front: string; back: string }>) => void;
+  onSave?: (items: Array<{ front: string; back: string }>) => void;
 };
 
 export function AddTermsPanel({ open, onClose, onSave }: AddTermsPanelProps) {
@@ -37,7 +37,7 @@ export function AddTermsPanel({ open, onClose, onSave }: AddTermsPanelProps) {
       .map((d) => ({ front: d.front.trim(), back: d.back.trim() }))
       .filter((d) => d.front && d.back);
 
-    if (ready.length) onSave(ready);
+    if (ready.length && onSave) onSave(ready);
     onClose();
   }
 

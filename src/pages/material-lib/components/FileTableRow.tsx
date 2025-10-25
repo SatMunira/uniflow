@@ -1,9 +1,9 @@
 import DropdownMenu from "@/components/ui/DropdownMenu/DropdownMenu";
 import fileIcon from "../../../assets/file-icon.svg";
-import type { MaterialItem } from "@/entities/library";
+import type { FileItem } from "@/api/files";
 
 interface FileTableRowProps {
-  item: MaterialItem;
+  item: FileItem;
   onDownload: (fileName: string) => void;
   onPreview: (fileName: string) => void;
   onDelete: (fileName: string) => void;
@@ -20,35 +20,39 @@ export default function FileTableRow({
       <td className="py-4 px-4">
         <div className="flex flex-row items-center gap-4">
           <img src={fileIcon} className="h-8" alt="file icon" />
-          <span>{item.name}</span>
+          <span>{item.fileName}</span>
         </div>
       </td>
       <td className="py-4 px-4">
-        <div>{item.dateAdded}</div>
+        <div>{item.dateCreated}</div>
       </td>
-      <td className="py-4 px-4">
-        <div
-          className="rounded-full text-white text-center w-full"
-          style={{ backgroundColor: item.tag.color }}
-        >
-          {item.tag.name}
-        </div>
+      <td className="py-4 px-4 flex gap-2">
+        {item.labels &&
+          item.labels.map((label) => (
+            <div
+              key={label.id}
+              className="rounded-full text-white text-center w-auto px-2 py-[3px]"
+              style={{ backgroundColor: label.color }}
+            >
+              {label.name}
+            </div>
+          ))}
       </td>
       <td className="py-4 px-4">
         <DropdownMenu
           items={[
             {
               label: "Download",
-              onClick: () => onDownload(item.name),
+              onClick: () => onDownload(item.fileName),
             },
             {
               label: "Preview",
-              onClick: () => onPreview(item.name),
+              onClick: () => onPreview(item.fileName),
             },
             {
               label: "Delete",
               labelColor: "#EB171A",
-              onClick: () => onDelete(item.name),
+              onClick: () => onDelete(item.fileName),
             },
           ]}
           trigger={

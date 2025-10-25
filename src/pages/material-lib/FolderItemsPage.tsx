@@ -4,13 +4,30 @@ import SearchBar from "@/components/ui/SearchBar/SearchBar";
 import FloatingButton from "@/components/ui/FloatingButton/FloatingButton";
 import FileTable from "./components/FileTable";
 import { useAddFileForm } from "./components/AddFileForm";
-import { libFoldersMock } from "@/mocks/libFolders";
 import { useParams } from "react-router-dom";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { getFilesBySubjectId, type FileItem } from "@/api/files";
 
 export default function FolderItemsPage() {
   const { folderName } = useParams<{ folderName: string }>();
-  const folder = libFoldersMock.find((f) => f.name === folderName);
+
+  const [files, setFiles] = useState<FileItem[]>([]);
+
+  useEffect(() => {
+    const fetchFiles = async () => {
+      if (folderName) {
+        try {
+          const data = await getFilesBySubjectId(folderName);
+          setFiles(data);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
+    fetchFiles();
+  }, [folderName]);
+
   const { formItems } = useAddFileForm();
 
   const handleDownload = useCallback((fileName: string) => {
@@ -28,7 +45,7 @@ export default function FolderItemsPage() {
     // TODO: Implement delete logic
   }, []);
 
-  if (!folder) {
+  if (!files) {
     return (
       <Page>
         <PageHeader title="Folder not found" />
@@ -42,19 +59,23 @@ export default function FolderItemsPage() {
   return (
     <Page>
       <PageHeader
-        title={folder.name}
+        title={files[0]?.subject?.name ?? "Subject"}
         backButton="/library"
         actions={<SearchBar placeholder={"Search a file..."} />}
       />
 
       <FileTable
-        items={folder.items}
+        items={files}
         onDownload={handleDownload}
         onPreview={handlePreview}
         onDelete={handleDelete}
       />
 
-      <FloatingButton position="bottom-right" items={formItems} title={"Add a file"} />
+      <FloatingButton
+        position="bottom-right"
+        items={formItems}
+        title={"Add a file"}
+      />
     </Page>
   );
 }
