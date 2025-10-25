@@ -327,13 +327,13 @@ export default function DashboardPage() {
                                             key={schedule.id}
                                             className="block rounded-lg border border-black p-2 bg-gradient-to-r from-[#f6b3ff] to-[#a86df4] text-white hover:shadow-lg transition-shadow"
                                             style={{
-                                                background: `linear-gradient(to right, ${schedule.subject.color}40, ${schedule.subject.color})`
+                                                background: `linear-gradient(to right, ${schedule.subject.color}, ${schedule.subject.color}70)`
                                             }}
                                         >
                                             <div className="text-[9px] opacity-90">
                                                 {schedule.dayOfWeek} · {schedule.startTime}–{schedule.endTime}
                                             </div>
-                                            <div className="text-xs font-extrabold">{schedule.subject.name}</div>
+                                            <div className="text-sm font-extrabold text-gray-100 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.3)]">{schedule.subject.name}</div>
                                         </Link>
                                     );
                                 })
