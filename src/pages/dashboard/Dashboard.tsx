@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import groupProject from "@/assets/group_project.png";
 import { TomatoIcon } from "./TomatoIcon";
-import { getDashboard, type DashboardResponse, type DashboardTask, type DashboardSchedule } from "@/api/dashboard";
+import { getDashboard, type DashboardResponse, type DashboardTask } from "@/api/dashboard";
 
 // Календарь с актуальной датой
 function CalendarWidget() {
@@ -253,7 +253,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Calendar */}
-                    <CalendarWidgetImported />
+                    <CalendarWidget />
 
                     {/* Tasks */}
                     <div className="bg-white border border-black rounded-xl p-4 font-mono flex flex-col h-full overflow-hidden">
