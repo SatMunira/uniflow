@@ -14,8 +14,19 @@ function shuffle<T>(arr: T[]) {
 
 export default function FlashReviewPage() {
   const { id = "" } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [flashcards, setFlashcards] = React.useState<Flashcard[]>([]);
+  const [knownIds, setKnownIds] = React.useState<Set<string>>(new Set());
+
+  // очередь карт
+  const [queue, setQueue] = React.useState<Flashcard[]>([]);
+  const [idx, setIdx] = React.useState(0); // номер текущей карты
+  const [flipped, setFlipped] = React.useState(false); // показана задняя сторона?
+
+  const total = flashcards.length;
+  const know = knownIds.size;
+  const learning = total - know;
 
   React.useEffect(() => {
     const fetchFlashcards = async () => {
@@ -30,57 +41,46 @@ export default function FlashReviewPage() {
     fetchFlashcards();
   }, [id]);
 
-  const navigate = useNavigate();
-
-  // очередь карт
-  const [queue, setQueue] = React.useState<Flashcard[]>([]);
-  const [idx, setIdx] = React.useState(0); // номер текущей карты
   React.useEffect(() => {
     if (flashcards.length > 0) {
       setQueue(shuffle(flashcards));
       setIdx(0);
     }
   }, [flashcards]);
-  const [flipped, setFlipped] = React.useState(false); // показана задняя сторона?
-  const [know, setKnow] = React.useState(0);
-  const [learning, setLearning] = React.useState(() => queue.length);
 
   const current = queue[idx];
 
-  console.log(current);
-
-  function nextCard(correct: boolean) {
-    if (!current) return;
+  const nextCard = React.useCallback((correct: boolean) => {
+    const currentCard = queue[idx];
+    if (!currentCard) return;
     setFlipped(false);
 
-    setQueue((prevQueue) => {
-      const cur = prevQueue[idx];
-
-      if (correct && cur) {
-        setKnownIds((prev) => {
-          const next = new Set(prev);
-          next.add(cur.id);
-          return next;
-        });
-      }
-
-      if (!correct && cur) {
+    if (correct) {
+      setKnownIds((prev) => {
+        const next = new Set(prev);
+        next.add(currentCard.id);
+        return next;
+      });
+      setIdx((i) => i + 1);
+    } else {
+      // Если не знает - возвращаем карту обратно в очередь на случайную позицию
+      setQueue((prevQueue) => {
         const head = prevQueue.slice(0, idx);
         const rest = prevQueue.slice(idx + 1);
         const insertPos = Math.floor(Math.random() * (rest.length + 1));
         const newQueue = [...head, ...rest];
-        newQueue.splice(idx + insertPos, 0, cur);
+        newQueue.splice(idx + insertPos, 0, currentCard);
         return newQueue;
-      }
-      return prevQueue;
-    });
-
-    setIdx((i) => i + 1);
-  }
+      });
+      setIdx((i) => i + 1);
+    }
+  }, [queue, idx]);
 
   React.useEffect(() => {
-    if (idx < queue.length) return;
+    // Не делаем ничего, если очередь еще не инициализирована или еще есть карты
+    if (queue.length === 0 || idx < queue.length) return;
 
+    // Если все карты изучены
     if (knownIds.size === total) {
       navigate(`/flash/${id}/results`, {
         state: { know: knownIds.size, still: 0, total },
@@ -88,20 +88,34 @@ export default function FlashReviewPage() {
       });
       return;
     }
-    const left = allTerms.filter((t) => !knownIds.has(t.id));
-    setQueue(shuffle(left));
-    setIdx(0);
-  }, [idx, queue.length, knownIds, total, allTerms, id, navigate]);
+
+    // Иначе начинаем новый раунд с неизученными картами
+    const left = flashcards.filter((t) => !knownIds.has(t.id));
+    if (left.length > 0) {
+      setQueue(shuffle(left));
+      setIdx(0);
+    }
+  }, [idx, queue.length, knownIds, total, flashcards, id, navigate]);
 
   const progress = total
     ? Math.round(((idx + (flipped ? 0.5 : 0)) / total) * 100)
     : 0;
 
-  if (!flashcards) {
+  if (flashcards.length === 0) {
     return (
       <div className="min-h-screen grid place-items-center bg-[#bba9ea]">
         <div className="rounded-xl bg-white/90 px-6 py-4 font-mono">
-          Set not found
+          Loading...
+        </div>
+      </div>
+    );
+  }
+
+  if (!current) {
+    return (
+      <div className="min-h-screen grid place-items-center bg-[#bba9ea]">
+        <div className="rounded-xl bg-white/90 px-6 py-4 font-mono">
+          No cards available
         </div>
       </div>
     );
