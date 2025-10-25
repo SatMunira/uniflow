@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Page } from "@/components/layout/Page";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Toolbar } from "@/components/layout/Toolbar";
@@ -9,7 +9,6 @@ import { Plus, TextAlignStart } from "lucide-react";
 import { WeekCalendar } from "@/components/ui/Calender/WeekCalendar";
 import { addDays } from "date-fns";
 import { generateOccurrencesForWeekView } from "@/data/schedule/generateWeek";
-import { subjectsMock } from "@/mocks/subjects";
 import type { CalendarEvent } from "@/components/ui/Calender/WeekCalendar";
 import { toggleAttended } from "@/data/schedule/generateWeek";
 import Modal from "@/components/ui/Modal/Modal";
@@ -19,15 +18,27 @@ import SubtleButton from "@/components/ui/SubtleButton/SubtleButton";
 import { TimeField } from "@/components/ui/TimeField/TimeField";
 import SelectField from "@/components/ui/SelectField/SelectField";
 import DropdownMenu from "@/components/ui/DropdownMenu/DropdownMenu";
+import { useSubjectsWithSchedules } from "@/hooks/useSubjects";
+import type { Subject } from "@/entities/schedule";
 
 export default function TimetablePage() {
   const [anchor, setAnchor] = useState(new Date("2025-10-21"));
   const [viewCycle, setViewCycle] = useState<WeekCycle>("WEEKLY");
 
-  const [occs, setOccs] = useState(() =>
-    generateOccurrencesForWeekView(subjectsMock, anchor, viewCycle)
+  const { subjects, loading, error } = useSubjectsWithSchedules(anchor);
+
+  const colorOf = new Map<string, string>(
+    subjects.map((s: Subject) => [s.id, s.color ?? "#7c3aed"])
   );
 
+  const [occs, setOccs] = useState(() =>
+    generateOccurrencesForWeekView(subjects, anchor, viewCycle)
+  );
+  useEffect(() => {
+    const next = generateOccurrencesForWeekView(subjects, anchor, viewCycle);
+    setOccs(next);
+    console.log("[GEN] occs after subjects:", next.length, next);
+  }, [subjects, anchor, viewCycle]);
   const [isNewOpen, setIsNewOpen] = useState(false);
 
   const [eventModalOpen, setEventModalOpen] = useState(false);
@@ -42,20 +53,25 @@ export default function TimetablePage() {
   });
 
   const events: CalendarEvent[] = useMemo(() => {
-    const fresh = generateOccurrencesForWeekView(subjectsMock, anchor, viewCycle);
-    const map = new Map(occs.map(o => [o.id, o.attended]));
-    const byId = fresh.map(o => ({ ...o, attended: map.get(o.id) ?? o.attended }));
+    const fresh = generateOccurrencesForWeekView(subjects, anchor, viewCycle);
 
-    const colorOf = new Map(subjectsMock.map(s => [s.id, s.color]));
-    return byId.map(o => ({
+    const attendedById = new Map<string, boolean>(
+      occs.map((o) => [o.id, !!o.attended])   // явный boolean
+    );
+
+    return fresh.map((o) => ({
       id: o.id,
       title: o.title,
       start: o.start,
       end: o.end,
-      attended: o.attended,
-      color: colorOf.get(o.subjectId) || "#7c3aed",
+      attended: attendedById.get(o.id) ?? false,
+      color: colorOf.get(o.subjectId) ?? "#7c3aed",  // строка, не {}
     }));
-  }, [anchor, viewCycle, occs]);
+  }, [subjects, anchor, viewCycle, occs]);
+
+
+  { loading && <div className="px-4 py-2 font-mono text-sm">Loading…</div> }
+  { error && <div className="px-4 py-2 font-mono text-sm text-red-600">{error}</div> }
 
   const handleToggleAttend = (id: string) => {
     setOccs(prev => {
@@ -138,7 +154,7 @@ export default function TimetablePage() {
           onNextWeek={() => setAnchor(a => addDays(a, +7))}
           events={events}
           onToggleAttend={handleToggleAttend}
-          onEventClick={(ev) => {                 
+          onEventClick={(ev) => {
             setSelectedEvent(ev);
             setEventModalOpen(true);
           }}
